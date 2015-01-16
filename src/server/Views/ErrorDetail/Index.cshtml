@@ -1,0 +1,18 @@
+﻿@{
+    Layout = null;
+}
+<style type="text/css">
+    label {
+        font-weight: bold;
+        padding-right: 5px;
+    }
+</style>
+<div class="row">
+    <h4 class="modal-title">Error Details</h4>
+    <p><label>Error Type</label><span>@ViewBag.ErrorType</span></p>
+    <p><label>Error Message</label><span>@ViewBag.ErrorMessage</span></p>
+    <p><label>Details</label><span>@ViewBag.Details</span></p>
+    <p><label>State</label><span>@ViewBag.State</span></p>
+    <p><label>Stack Trace</label><span>@ViewBag.StackTrace</span></p>
+    <p><label>Status</label><span>ie. None, Troubleshooting, Fixed in Version X, Fixed in Unreleased</span></p>
+</div>

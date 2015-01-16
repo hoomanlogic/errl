@@ -1,0 +1,16 @@
+﻿<div id="status-page"></div>
+@Html.Partial("_SessionPartial")
+@section scripts {
+    <script src="~/js/libs.min.js"></script>
+    <script src="~/js/errl.js"></script>
+    <script src="~/js/common.js"></script>
+    <script src="~/js/app.js"></script>
+    <script src="~/js/status.js"></script>
+    <script src="~/js/views.js"></script>
+    <script type="text/javascript">
+        $().ready(function () {
+            $('#navStatus').toggleClass('active');
+            React.render(React.createElement(StatusPage), document.getElementById('status-page'));
+        });
+    </script>
+}

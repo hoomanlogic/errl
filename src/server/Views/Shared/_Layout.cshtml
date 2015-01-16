@@ -1,0 +1,92 @@
+﻿@using Microsoft.AspNet.Identity
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- HEAD -->
+    <meta charset="utf-8" />
+    <title>Errl</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- STYLESHEETS -->
+    <link href="~/css/libs.min.css" rel="stylesheet" />
+    <link href="~/css/main.min.css" rel="stylesheet" />
+
+    <!-- SCRIPTS - BEFORE BODY -->
+    <script type="text/javascript">
+    if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+        var msViewportStyle = document.createElement("style");
+        var mq = "@@-ms-viewport{width:auto!important}";
+        msViewportStyle.appendChild(document.createTextNode(mq));
+        document.getElementsByTagName("head")[0].appendChild(msViewportStyle);
+    }
+
+    var toggleAccountDropDown = function () {
+        var $win = $(window);
+        var $box = $('#accountDropDown');
+
+        var handler = function (event) {
+            // handle click outside of the dropdown
+            if ($box.has(event.target).length == 0 && !$box.is(event.target)) {
+                $box.removeClass('open');
+                $win.off("click.Bst", handler);
+            }
+        };
+
+        $box.toggleClass('open');
+        $win.on("click.Bst", handler);
+    };
+    </script>
+    <script src="~/js/react.min.js"></script>
+</head>
+<body>
+@if (Request.IsAuthenticated)
+{
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div>
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("ErrL", "Index", "Status", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li id="navStatus">@Html.ActionLink("Status", "Index", "Status", new { area = "" }, null)</li>
+                    <li id="navReports">@Html.ActionLink("Reports", "Index", "Reports", new { area = "" }, null)</li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li id="accountDropDown" class="dropdown" onclick="toggleAccountDropDown()">
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle" style="padding: 5px; padding-right: 20px; margin-top: 6px; margin-right: 6px;"><i class="fa fa-2x fa-gear"></i></a>
+                        <ul class="dropdown-menu">
+                            <li key="logout"><a href="javascript:sessionStorage.removeItem('accessToken');$('#logoutForm').submit();">Log off</a></li>
+                            <li key="manage"><a href="/Manage" title="Manage">Account</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+    <div class="body-content">
+        @RenderBody()
+    </div>
+}
+else
+{
+    <div><h1>Meet ErrL!</h1></div>
+    <div>
+        @RenderBody()
+    </div>
+}
+    
+    <div class="status-bar">
+        <small><span class="pull-left">&copy; @DateTime.Now.Year HoomanLogic</span></small>
+    </div>
+    @RenderSection("scripts", required: false)
+</body>
+
+</html>
