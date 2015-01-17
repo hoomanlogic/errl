@@ -27,7 +27,7 @@ var ErrorHistoryModal = React.createClass({
                         { field: 'errorDescription', display: 'Description'},
                         { field: 'objectName', display: 'Object'},
                         { field: 'subName', display: 'Sub'},
-                        { field: 'stackTrace', display: 'State Trace', limitLength: 100},
+                        { field: 'stackTrace', display: 'Stack Trace', onRender: this.renderStackTrace},
                         { field: 'state', display: 'State', limitLength: 100},
                         { field: 'details', display: 'Details', limitLength: 100},
                         { field: 'userId', display: 'User'},
@@ -36,6 +36,26 @@ var ErrorHistoryModal = React.createClass({
                 </div>
             </Modal>
         );
+    },
+    renderStackTrace: function (data, field, index) {
+        var locationMatch = /\((.*?):(\d+):(\d+)\)/;
+        
+        return data.stackTrace.split(' at ').slice(1).map(function (item, i) {
+            console.log(item);
+            var location = locationMatch.exec(item);
+            
+            if (location != null) {
+                var clean = item.replace(location[0], '').trim();
+                return (
+                    <div><a target="_blank" href={location[1]}><span data-toggle="tooltip" data-placement="right" title={location[0]}>{clean}</span></a></div>
+                );
+            } else {
+                return (
+                    <div>{item}</div>  
+                );
+            }
+            
+        });
     },
     handleClose: function(event) {
         // hide the modal

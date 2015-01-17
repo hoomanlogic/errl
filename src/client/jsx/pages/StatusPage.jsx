@@ -195,8 +195,6 @@ var StatusPage = React.createClass({
             }
         }
 
-
-        
         if (needsFreshData) {
             this.getHourlySummary(stateChange.criteria_product || this.state.criteria_product, 
                                   stateChange.criteria_environment || this.state.criteria_environment, 

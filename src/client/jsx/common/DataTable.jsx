@@ -56,7 +56,9 @@ var DataTable = React.createClass({
                             text = text.slice(0,colDefs[i].limitLength);
                         }
                     }
-                    if (colDefs[i].onCellClick) {
+                    if (colDefs[i].onRender) {
+                        cellContent = colDefs[i].onRender(data[j], colDefs[i].field, j);
+                    } else if (colDefs[i].onCellClick) {
                         cellContent = (
                             <a href="javascript:;" onClick={colDefs[i].onCellClick.bind(null, colDefs[i].field, data[j])}>
                                 <span data-toggle="tooltip" data-placement="bottom" title={data[j][colDefs[i].field]}>{text}</span>
