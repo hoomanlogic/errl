@@ -1,0 +1,346 @@
+/* ELEMENT SELECTORS */
+body {
+  padding-top: 75px;
+  padding-bottom: 20px;
+  background-color: @clrBackground;
+  color: @clrDefault;
+}
+
+hr {
+  margin-top: 0;
+}
+
+h3 {
+  margin-bottom: 0;
+}
+
+input,
+select,
+textarea {
+  max-width: 280px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: @clrComment;
+  font-variant: small-caps;
+}
+
+hr {
+  border-top: 1px solid #eee;
+  border-top-width: 2px;
+  border-top-style: solid;
+  border-top-color: @clrComment
+}
+
+/* CLASS SELECTORS */
+.navbar-inverse .navbar-brand {
+  color: #aaa;
+  font-variant: small-caps;
+}
+
+#criteria {
+  top: 50px; /* Header Height */
+  bottom: 21px; /* Footer Height */
+  background-color: @clrLowContrast;
+  z-index: 100;
+  position: fixed;
+  padding: 15px;
+  width: 360px;
+
+  .transition-property(~"left, opacity, visibility");
+  .transition-duration(.35s);
+  .transition-timing-function(ease);
+
+  left: -360px;
+  opacity: 0;
+  visibility: hidden;
+}
+
+#criteria.expanded {
+  left: 0;
+  visibility:visible;
+  opacity: 1;
+}
+
+#view {
+  padding: 15px;
+  margin-left: 0;
+  .transition-property(~"margin-left");
+  .transition-duration(.35s);
+  .transition-timing-function(ease);
+}
+#view.with-criteria {
+  margin-left: 360px;
+}
+
+
+a.btn-link, a.btn-link:hover {
+  color: black
+}
+
+#myLineChartLegend {
+  position: relative;
+  top: -400px;
+  margin-left: 970px;
+}
+
+#myPieChartLegend {
+  position: relative;
+  top: -300px;
+  margin-left: 600px;
+}
+
+/* CHS PARAMETER INFO STYLING */
+examinee_open::before {
+  content: "Examinee: "
+}
+
+examinee_open {
+  display:block;
+}
+
+exam_open::before {
+  content: "Exam: "
+}
+
+exam_open {
+  display:block;
+}
+
+examtracer_focused::before {
+  content: "Tracer: "
+}
+
+examtracer_focused {
+  display:block;
+}
+
+contract_open::before {
+  content: "Contract: "
+}
+
+contract_open {
+  display:block;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+  padding-left: 30px;
+  padding-right: 15px;
+  margin-top: -50px;
+}
+
+@media (min-width: 790px) {
+  .body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+/* TOOLTIPS */
+.tooltip {
+  position: absolute;
+  z-index: 2070;
+  display: block;
+  font-size: 12px;
+  line-height: 1.4;
+  visibility: visible;
+  filter: alpha(opacity=0);
+  opacity: 0;
+}
+.tooltip.in {
+  filter: alpha(opacity=100);
+  opacity: 1;
+}
+.tooltip.top {
+  padding: 5px 0;
+  margin-top: -3px;
+}
+.tooltip.right {
+  padding: 0 5px;
+  margin-left: 3px;
+}
+.tooltip.bottom {
+  padding: 5px 0;
+  margin-top: 3px;
+}
+.tooltip.left {
+  padding: 0 5px;
+  margin-left: -3px;
+}
+.tooltip-inner {
+  max-width: 400px;
+  padding: 3px 8px;
+  color: @clrDefault;
+  word-break: break-all;
+  word-wrap: break-word;
+  text-align: center;
+  text-decoration: none;
+  background-color: @clrDarkMatter;
+  border-radius: 4px;
+}
+.tooltip-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+}
+.tooltip.top .tooltip-arrow {
+  bottom: 0;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px 5px 0;
+  border-top-color: @clrDarkMatter;
+}
+.tooltip.top-left .tooltip-arrow {
+  bottom: 0;
+  left: 5px;
+  border-width: 5px 5px 0;
+  border-top-color: @clrDarkMatter;
+}
+.tooltip.top-right .tooltip-arrow {
+  right: 5px;
+  bottom: 0;
+  border-width: 5px 5px 0;
+  border-top-color: @clrDarkMatter;
+}
+.tooltip.right .tooltip-arrow {
+  top: 50%;
+  left: 0;
+  margin-top: -5px;
+  border-width: 5px 5px 5px 0;
+  border-right-color: #000;
+}
+.tooltip.left .tooltip-arrow {
+  top: 50%;
+  right: 0;
+  margin-top: -5px;
+  border-width: 5px 0 5px 5px;
+  border-left-color: @clrDarkMatter;
+}
+.tooltip.bottom .tooltip-arrow {
+  top: 0;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 0 5px 5px;
+  border-bottom-color: @clrDarkMatter;
+}
+.tooltip.bottom-left .tooltip-arrow {
+  top: 0;
+  left: 5px;
+  border-width: 0 5px 5px;
+  border-bottom-color: @clrDarkMatter;
+}
+.tooltip.bottom-right .tooltip-arrow {
+  top: 0;
+  right: 5px;
+  border-width: 0 5px 5px;
+  border-bottom-color: @clrDarkMatter;
+}
+
+/* MODALS */
+.modal-dialog {
+  width: 1850px;
+}
+
+.modal-body {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  max-height: 80vh;
+  max-width: 100vw;
+  padding: 0;
+}
+
+.modal-content {
+    position: relative;
+    background-color: @clrLowContrast;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    border: 1px solid #999;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: 6px;
+    outline: 0;
+    -webkit-box-shadow: 0 3px 9px rgba(0,0,0,.5);
+    box-shadow: 0 3px 9px rgba(0,0,0,.5);
+}
+
+.modal-header {
+    color: @clrDefault;
+    min-height: 18px;
+    padding: 15px;
+    border: 0;
+    font-size: 1.2em;
+}
+
+.modal-footer {
+    padding: 15px;
+    text-align: right;
+    border-top: 0;
+}
+
+/* SCROLLBAR */
+.scroll::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+.scroll::-webkit-scrollbar-track {
+    background-color: @clrDarkMatter;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+    background-color: @clrLowContrast; 
+    border: 1px solid @clrBackgroundH;
+}
+
+/* TABLES */
+.table-striped>tbody>tr:nth-child(odd)>td, .table-striped>tbody>tr:nth-child(odd)>th {
+  background-color: @clrBackgroundH;
+}
+
+.table-striped>tbody>tr:nth-child(even)>td, .table-striped>tbody>tr:nth-child(even)>th {
+    background-color: @clrBackground;
+}
+
+.table>thead>tr {
+  border-bottom: 2px solid @clrComment;
+}
+
+.table>thead>tr>th>a {
+  color: @clrComment;
+}
+
+.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
+  padding: 8px;
+  line-height: 1;
+  vertical-align: top;
+  border: none;
+}
+
+/* CHARTS */
+.line-legend {
+  list-style: none;
+}
+
+.pie-legend {
+  list-style: none;
+}
+
+/* FOOTER */
+.status-bar {
+  position: fixed;
+  bottom: 0;
+  background-color: @clrBackgroundH;
+  width: 100%;
+  padding: 2px;
+  z-index: 1000;
+}
+
+footer.status-bar span.pull-left {
+  height: 15px;
+}
+
+footer.status-bar span.pull-right {
+  height: 15px;
+}

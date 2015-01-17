@@ -1,275 +1,4 @@
-var DataTable = React.createClass({displayName: "DataTable",
-    getInitialState: function () {
-        return { 
-            sortBy: (this.props.sortBy || this.props.columnDefinitions[0].field), 
-            sortAsc: true
-        };
-    },
-    componentDidUpdate: function () {
-        $('[data-toggle="tooltip"]').tooltip();
-    },
-    render: function () {
-        // states
-        var sortBy = this.state.sortBy;
-        var sortAsc = this.state.sortAsc;
-        
-        // props
-        var colDefs = this.props.columnDefinitions;
-        var data = _.sortBy(this.props.data, function(item){ return item[sortBy]; });
-        if (!sortAsc) {
-            data.reverse();   
-        }
-        
-        // minimum data requirement
-        if (!colDefs) {
-            return null;   
-        }
-        
-        var domHeadColumns = [], domRows = [], i, j;
-        
-        // define columns
-        for (i = 0; i < colDefs.length; i++) {
-        
-            var domHeadColumn = (
-                React.createElement("th", {className: 'text-' + (colDefs[i].justify || 'left')}, 
-                    React.createElement("a", {href: "javascript:;", onClick: this.sort.bind(null, colDefs[i].field)}, 
-                        colDefs[i].display, " ", React.createElement("i", {className: sortBy === colDefs[i].field ? (sortAsc ? 'fa fa-sort-asc' : 'fa fa-sort-desc') : ''})
-                    )
-                )
-            );
-            domHeadColumns.push(domHeadColumn);
-        };
-    
-        // todo: sort data, probably w/ underscore
-        
-        if (data) {
-            // define rows
-            for (j = 0; j < data.length; j++) {
-                var domBodyColumns = [];
-
-                for (i = 0; i < colDefs.length; i++) {
-
-                    var cellContent = null;
-                    var text = data[j][colDefs[i].field];
-                    if (colDefs[i].limitLength) {
-                        if (text.length > colDefs[i].limitLength) {
-                            text = text.slice(0,colDefs[i].limitLength);
-                        }
-                    }
-                    if (colDefs[i].onCellClick) {
-                        cellContent = (
-                            React.createElement("a", {href: "javascript:;", onClick: colDefs[i].onCellClick.bind(null, colDefs[i].field, data[j])}, 
-                                React.createElement("span", {"data-toggle": "tooltip", "data-placement": "bottom", title: data[j][colDefs[i].field]}, text)
-                            )
-                        );
-                    } else {
-                        cellContent = (
-                            React.createElement("span", {"data-toggle": "tooltip", "data-placement": "bottom", title: data[j][colDefs[i].field]}, text)
-                        );
-                    }
-
-                    var domBodyColumn = (
-                        React.createElement("td", {className: 'text-' + (colDefs[i].justify || 'left')}, 
-                            cellContent
-                        )
-                    );
-
-                    domBodyColumns.push(domBodyColumn);
-                };
-
-                var domRow = (
-                    React.createElement("tr", null, 
-                        domBodyColumns
-                    )
-                );
-                domRows.push(domRow);
-            }; 
-        }
-
-        
-        
-        return (
-            React.createElement("table", {className: "table table-striped"}, 
-                React.createElement("thead", null, 
-                    React.createElement("tr", null, 
-                        domHeadColumns
-                    )
-                ), 
-                React.createElement("tbody", null, 
-                    domRows
-                )
-            )
-        );
-    },
-    sort: function (field) {
-        var sortBy = this.state.sortBy;
-        var sortAsc = this.state.sortAsc;
-        if (field === sortBy) {
-            sortAsc = !sortAsc;
-        } else {
-            sortBy = field;
-            sortAsc = true;
-        }
-        
-        this.setState({ sortBy: sortBy, sortAsc: sortAsc });
-    }
-});
-/* DropdownMenu
- * ClassNames: dropdown, dropdown-[default,primary,success,info,warning,danger], dropdown-menu, open
- * Dependencies: jQuery, Bootstrap(CSS)
- */
-var DropdownMenu = React.createClass({displayName: "DropdownMenu",
-    getDefaultProps: function () {
-        return {
-          className: '',
-          style: null,
-          buttonContent: null,
-          menuItems: [],
-          open: false
-        };
-    },
-    render: function () {
-        var className = this.props.className;
-        var buttonContent = this.props.buttonContent;
-        var style = this.props.style;
-        var menuItems = this.props.menuItems;
-      
-        if (className.length > 0) {
-          className = ' ' + className; 
-        }
-      
-        return (
-            React.createElement("li", {ref: "dropdown", className: 'dropdown' + className, onClick: this.toggle}, 
-                React.createElement("a", {href: "#", "data-toggle": "dropdown", className: "dropdown-toggle", style: style}, buttonContent), 
-                React.createElement("ul", {className: "dropdown-menu"}, 
-                  menuItems
-                )
-            )
-        );
-    },
-    toggle: function () {
-        var $win = $(window);
-        var $box = $(this.refs.dropdown.getDOMNode());
-      
-        var handler = function(event) {	
-            // handle click outside of the dropdown
-            if ($box.has(event.target).length == 0 && !$box.is(event.target)) {
-              $box.removeClass('open');
-              $win.off("click.Bst", handler);
-            }
-		};
-                    
-        $box.toggleClass('open');
-        $win.on("click.Bst", handler);
-    }
-});
-var Modal = React.createClass({displayName: "Modal",
-    getDefaultProps: function () { 
-        return {
-            backdrop: true, 
-            buttons: [],
-            keyboard: true, 
-            show: true, 
-            remote: ''
-        }
-    }, 
-    render: function () {
-        var buttons = this.props.buttons.map(function(button, index) {
-            return React.createElement("button", {key: index, type: "button", className: 'btn btn-' + button.type, onClick: button.handler}, button.text)
-        })
-        return (
-            React.createElement("div", {className: "modal fade"}, 
-                React.createElement("div", {className: "modal-dialog"}, 
-                    React.createElement("div", {className: "modal-content"}, 
-                        React.createElement("div", {className: "modal-header"}, 
-                            this.renderCloseButton(), React.createElement("strong", null, this.props.header)
-                        ), 
-                        React.createElement("div", {className: "modal-body scroll"}, 
-                            this.props.children
-                        ), 
-                        React.createElement("div", {className: "modal-footer"}, 
-                            buttons
-                        )
-                    )
-                )
-            )
-        );
-    },
-    renderCloseButton: function () {
-        return React.createElement("button", {type: "button", className: "close", onClick: this.hide, dangerouslySetInnerHTML: {__html: '&times'}})
-    },
-    hide: function () {
-        var domThis = $(this.getDOMNode());
-        domThis.removeClass('in');
-      
-        window.setTimeout(function() {
-            domThis.css('display', 'none');
-        }, 150);
-    },
-    show: function () {
-        var domThis = $(this.getDOMNode());
-        domThis.css('display', 'block');
-        
-        // ensure display: block is truly set before
-        // adding the 'in' or else the animation does
-        // not occur
-        window.setTimeout(function() {
-            domThis.addClass('in');
-        }, 1);
-    },
-});
-var ErrorHistoryModal = React.createClass({displayName: "ErrorHistoryModal",
-    getInitialState: function () {
-        return {
-            details: null,
-            info: null
-        };
-    },
-    render: function () {
-        
-        var nuggets = null;
-        if (this.state.info) {
-            nuggets = this.state.info.map(function (item) {
-                return (
-                    React.createElement("li", null, item)  
-                );
-            });
-        }
-        
-        return (
-            React.createElement(Modal, {ref: "modal", show: false, header: "Error History"}, 
-                React.createElement("div", null, 
-                    React.createElement("ul", {id: "modalStatsInfo"}, 
-                        nuggets
-                    ), 
-                    React.createElement(DataTable, {sortBy: 'occurred', sortAsc: false, data: this.state.details, columnDefinitions: [
-                        { field: 'errorType', display: 'Type'},
-                        { field: 'errorDescription', display: 'Description'},
-                        { field: 'objectName', display: 'Object'},
-                        { field: 'subName', display: 'Sub'},
-                        { field: 'stackTrace', display: 'State Trace', limitLength: 100},
-                        { field: 'state', display: 'State', limitLength: 100},
-                        { field: 'details', display: 'Details', limitLength: 100},
-                        { field: 'userId', display: 'User'},
-                        { field: 'occurred', display: 'Occurred'}
-                    ]})
-                )
-            )
-        );
-    },
-    handleClose: function(event) {
-        // hide the modal
-        this.refs.modal.hide();
-    },
-    open: function (data) {
-        // set data
-        this.setState({ details: data.details, info: data.info });
-        
-        // show the modal
-        this.refs.modal.show();
-    }
-});
-var StatusPage = React.createClass({displayName: "StatusPage",
+var StatusPage = React.createClass({
     getInitialState: function () {
         return {
             options: null,
@@ -310,53 +39,53 @@ var StatusPage = React.createClass({displayName: "StatusPage",
         }
         
         var products = this.getProducts(options).map( function (item) {
-            return (React.createElement("option", {value: item}, item));
+            return (<option value={item}>{item}</option>);
         });
             
         var environments = this.getEnvironments(options, this.state.criteria_product).map( function (item) {
-            return (React.createElement("option", {value: item}, item));
+            return (<option value={item}>{item}</option>);
         });
             
         var versions = this.getVersions(options, this.state.criteria_product, this.state.criteria_environment).map( function (item) {
-            return (React.createElement("option", {value: item}, item));
+            return (<option value={item}>{item}</option>);
         });
             
         var froms = this.state.fromOptions.map( function (item) {
-            return (React.createElement("option", {value: item.value}, item.label));
+            return (<option value={item.value}>{item.label}</option>);
         });
                         
         var tos = this.state.toOptions.map( function (item) {
-            return (React.createElement("option", {value: item.value}, item.label));
+            return (<option value={item.value}>{item.label}</option>);
         });
             
         var hourlySummary = null;
         if (hourlySummaryResult) {
             hourlySummary = (
-                React.createElement("div", null, 
-                    React.createElement("h3", {id: "headingHourly"}, "Hourly Summary"), 
-                    React.createElement("hr", null), 
-                    React.createElement("div", {id: "myLineChartContainer"}, 
-                        React.createElement("canvas", {id: "myLineChart", width: "970", height: "400"})
-                    ), 
-                    React.createElement("div", {id: "myLineChartLegend"}
+                <div>
+                    <h3 id="headingHourly">Hourly Summary</h3>
+                    <hr />
+                    <div id="myLineChartContainer">
+                        <canvas id="myLineChart" width="970" height="400"></canvas>
+                    </div>
+                    <div id="myLineChartLegend">
 
-                    )
-                )
+                    </div>
+                </div>
             );
         }
             
         var errorSummary = null;
         if (errorSummaryResult) {
             errorSummary = (
-                React.createElement("div", {id: "errorSummarySection"}, 
-                    React.createElement("h3", null, "Error Summary"), 
-                    React.createElement("hr", null), 
-                    React.createElement("div", {id: "myPieChartContainer"}, 
-                        React.createElement("canvas", {id: "myPieChart", width: "600", height: "300"})
-                    ), 
-                    React.createElement("div", {id: "myPieChartLegend"}), 
+                <div id="errorSummarySection">
+                    <h3>Error Summary</h3>
+                    <hr />
+                    <div id="myPieChartContainer">
+                        <canvas id="myPieChart" width="600" height="300"></canvas>
+                    </div>
+                    <div id="myPieChartLegend"></div>
 
-                    React.createElement(DataTable, {sortBy: 'latestOccurrence', sortAsc: false, data: this.state.errorSummaryResult.details, columnDefinitions: [
+                    <DataTable sortBy={'latestOccurrence'} sortAsc={false} data={this.state.errorSummaryResult.details} columnDefinitions={[
                         { field: 'errorType', display: 'Type', onCellClick: this.openErrorHistory},
                         { field: 'errorDescription', display: 'Description'},
                         { field: 'objectName', display: 'Object', onCellClick: this.openErrorHistory},
@@ -364,63 +93,63 @@ var StatusPage = React.createClass({displayName: "StatusPage",
                         { field: 'timesOccurred', display: '# Errors'},
                         { field: 'latestOccurrence', display: 'Latest'},
                         { field: 'usersAffected', display: 'Users Affected'}
-                    ]})
-                )
+                    ]} />
+                </div>
             );
         }
         
         return (
-            React.createElement("div", {className: "row"}, 
-                React.createElement("div", {id: "criteria", className: "expanded"}, 
-                    React.createElement("form", {className: "form-horizontal", role: "form"}, 
-                        React.createElement("div", {className: "form-group"}, 
-                            React.createElement("label", {for: "selectProduct", className: "col-sm-4 control-label"}, "Product"), 
-                            React.createElement("div", {className: "col-sm-8"}, 
-                                React.createElement("select", {id: "selectProduct", className: "form-control", value: this.state.criteria_product, onChange: this.handleCriteriaChange}, 
-                                    products
-                                )
-                            )
-                        ), 
-                        React.createElement("div", {className: "form-group"}, 
-                            React.createElement("label", {for: "selectEnvironment", className: "col-sm-4 control-label"}, "Environment"), 
-                            React.createElement("div", {className: "col-sm-8"}, 
-                                React.createElement("select", {id: "selectEnvironment", className: "form-control", value: this.state.criteria_environment, onChange: this.handleCriteriaChange}, 
-                                    environments
-                                )
-                            )
-                        ), 
-                        React.createElement("div", {className: "form-group"}, 
-                            React.createElement("label", {for: "selectVersion", className: "col-sm-4 control-label"}, "Version"), 
-                            React.createElement("div", {className: "col-sm-8"}, 
-                                React.createElement("select", {id: "selectVersion", className: "form-control", value: this.state.criteria_version, onChange: this.handleCriteriaChange}, 
-                                    versions
-                                )
-                            )
-                        ), 
-                        React.createElement("div", {className: "form-group"}, 
-                            React.createElement("label", {for: "selectFrom", className: "col-sm-4 control-label"}, "From"), 
-                            React.createElement("div", {className: "col-sm-8"}, 
-                                React.createElement("select", {id: "selectFrom", className: "form-control", value: this.state.criteria_from, onChange: this.handleCriteriaChange}, 
-                                    froms
-                                )
-                            )
-                        ), 
-                        React.createElement("div", {className: "form-group"}, 
-                            React.createElement("label", {for: "selectTo", className: "col-sm-4 control-label"}, "To"), 
-                            React.createElement("div", {className: "col-sm-8"}, 
-                                React.createElement("select", {id: "selectTo", className: "form-control", value: this.state.criteria_to, onChange: this.handleCriteriaChange}, 
-                                    tos
-                                )
-                            )
-                        )
-                    )
-                ), 
-                React.createElement("div", {id: "view", className: "with-criteria"}, 
-                    hourlySummary, 
-                    errorSummary
-                ), 
-                React.createElement(ErrorHistoryModal, {ref: "errorHistoryModal"})
-            )
+            <div className="row">
+                <div id="criteria" className="expanded">
+                    <form className="form-horizontal" role="form">
+                        <div className="form-group">
+                            <label for="selectProduct" className="col-sm-4 control-label">Product</label>
+                            <div className="col-sm-8">
+                                <select id="selectProduct" className="form-control" value={this.state.criteria_product} onChange={this.handleCriteriaChange}>
+                                    {products}
+                                </select>
+                            </div>
+                        </div>
+                        <div className="form-group">
+                            <label for="selectEnvironment" className="col-sm-4 control-label">Environment</label>
+                            <div className="col-sm-8">
+                                <select id="selectEnvironment" className="form-control" value={this.state.criteria_environment} onChange={this.handleCriteriaChange}>
+                                    {environments}
+                                </select>
+                            </div>
+                        </div>
+                        <div className="form-group">
+                            <label for="selectVersion" className="col-sm-4 control-label">Version</label>
+                            <div className="col-sm-8">
+                                <select id="selectVersion" className="form-control" value={this.state.criteria_version} onChange={this.handleCriteriaChange}>
+                                    {versions}
+                                </select>
+                            </div>
+                        </div>
+                        <div className="form-group">
+                            <label for="selectFrom" className="col-sm-4 control-label">From</label>
+                            <div className="col-sm-8">
+                                <select id="selectFrom" className="form-control" value={this.state.criteria_from} onChange={this.handleCriteriaChange}>
+                                    {froms}
+                                </select>
+                            </div>
+                        </div>
+                        <div className="form-group">
+                            <label for="selectTo" className="col-sm-4 control-label">To</label>
+                            <div className="col-sm-8">
+                                <select id="selectTo" className="form-control" value={this.state.criteria_to}  onChange={this.handleCriteriaChange}>
+                                    {tos}
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div id="view" className="with-criteria">
+                    {hourlySummary}
+                    {errorSummary}
+                </div>
+                <ErrorHistoryModal ref="errorHistoryModal" />
+            </div>
         );
     },
     selectedProductChanged: function () {

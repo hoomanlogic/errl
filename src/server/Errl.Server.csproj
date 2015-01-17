@@ -242,9 +242,9 @@
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="Areas\HelpPage\Views\_ViewStart.cshtml" />
     <Content Include="clientaccesspolicy.xml" />
+    <Content Include="css\app.css" />
+    <Content Include="css\app.min.css" />
     <Content Include="css\libs.min.css" />
-    <Content Include="css\main.css" />
-    <Content Include="css\main.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.eot" />
     <Content Include="fonts\fontawesome-webfont.svg" />
@@ -283,8 +283,6 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
     <Content Include="js\jquery.min.js.map" />
-    <Content Include="css\main.css.map" />
-    <Content Include="css\main.less" />
     <Content Include="js\views.js" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
