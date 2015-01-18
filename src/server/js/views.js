@@ -1,3 +1,28 @@
+var ContentEditable = React.createClass({displayName: "ContentEditable",
+    render: function () {
+        return React.createElement("div", {
+            style: {display: 'inline'}, 
+            onInput: this.emitChange, 
+            onBlur: this.emitChange, 
+            contentEditable: true, 
+            dangerouslySetInnerHTML: {__html: this.props.html}});    
+    },
+    shouldComponentUpdate: function(nextProps){
+        //return nextProps.html !== this.getDOMNode().innerHTML;
+        return nextProps.html !== this.props.html;
+    },
+    emitChange: function () {
+        var html = this.getDOMNode().innerHTML;
+        if (this.props.onChange && html !== this.lastHtml) {
+            this.props.onChange({
+                target: {
+                    value: html
+                }
+            });
+        }
+        this.lastHtml = html;    
+    }
+});
 var DataTable = React.createClass({displayName: "DataTable",
     getInitialState: function () {
         return { 
@@ -56,7 +81,9 @@ var DataTable = React.createClass({displayName: "DataTable",
                             text = text.slice(0,colDefs[i].limitLength);
                         }
                     }
-                    if (colDefs[i].onCellClick) {
+                    if (colDefs[i].onRender) {
+                        cellContent = colDefs[i].onRender(data[j], colDefs[i].field, j);
+                    } else if (colDefs[i].onCellClick) {
                         cellContent = (
                             React.createElement("a", {href: "javascript:;", onClick: colDefs[i].onCellClick.bind(null, colDefs[i].field, data[j])}, 
                                 React.createElement("span", {"data-toggle": "tooltip", "data-placement": "bottom", title: data[j][colDefs[i].field]}, text)
@@ -218,6 +245,81 @@ var Modal = React.createClass({displayName: "Modal",
         }, 1);
     },
 });
+/* Panel
+ * ClassNames: panel, panel-[default,primary,success,info,warning,danger], panel-collapse, in, collapse, collapsing, clickable, panel-title, overflow
+ * Dependencies: jQuery, Bootstrap(CSS)
+ * Props: children :: an array of keyed li elements
+ *        type :: a string of one of the following: default, primary, success, info, warning, danger
+ *        header :: an element or string
+ */
+var Panel = React.createClass({displayName: "Panel",
+    getDefaultProps: function () {
+      return { header: null, type: 'default'  };
+    },
+    componentDidMount: function () {
+      this.rememberHeight();
+    },
+    componentDidUpdate: function () {
+      this.rememberHeight();
+    },
+    render: function () {
+        // props
+        var children = this.props.children;
+        var type = this.props.type;
+        var header = this.props.header;
+
+        return (
+            React.createElement("div", {className: 'panel panel-' + type}, 
+                React.createElement("div", {className: "panel-heading clickable", onClick: this.toggle}, 
+                    React.createElement("h4", {className: "panel-title overflow"}, 
+                        header
+                    )
+                ), 
+                React.createElement("div", {ref: "collapsible", className: "panel-collapse collapse"}, 
+                    children
+                )
+            )
+        );
+    },
+    rememberHeight: function () {
+      var domPanel = $(this.refs.collapsible.getDOMNode());
+      this.props.height = domPanel.height();
+    },
+    toggle: function () {
+        
+        var domPanel = $(this.refs.collapsible.getDOMNode());
+        
+        // abort if in transition
+        if (domPanel.hasClass('collapsing')) {
+            return; 
+        }
+        
+        if (domPanel.hasClass('in')) {
+            // collapse panel
+            domPanel.css('height', this.props.height + 'px')
+                    .removeClass('collapse in')
+                    .addClass('collapsing')
+                    .attr('aria-expanded', false)['height'](0)
+                    .css('height', '0');
+            window.setTimeout(function() {
+                domPanel.removeClass('collapsing')
+                        .addClass('collapse');
+            }, 350);
+        } else {
+            // expand panel
+            domPanel.css('height', '0')
+                    .removeClass('collapse')
+                    .addClass('collapsing')
+                    .attr('aria-expanded', true)['height'](0)
+                    .css('height', this.props.height + 'px')
+            window.setTimeout(function() {
+                domPanel.removeClass('collapsing')
+                        .addClass('collapse in')['height']('')
+                        .css('height', null);
+            }, 350);
+        }
+    }
+});
 var ErrorHistoryModal = React.createClass({displayName: "ErrorHistoryModal",
     getInitialState: function () {
         return {
@@ -242,20 +344,47 @@ var ErrorHistoryModal = React.createClass({displayName: "ErrorHistoryModal",
                     React.createElement("ul", {id: "modalStatsInfo"}, 
                         nuggets
                     ), 
-                    React.createElement(DataTable, {sortBy: 'occurred', sortAsc: false, data: this.state.details, columnDefinitions: [
-                        { field: 'errorType', display: 'Type'},
-                        { field: 'errorDescription', display: 'Description'},
-                        { field: 'objectName', display: 'Object'},
-                        { field: 'subName', display: 'Sub'},
-                        { field: 'stackTrace', display: 'State Trace', limitLength: 100},
-                        { field: 'state', display: 'State', limitLength: 100},
-                        { field: 'details', display: 'Details', limitLength: 100},
-                        { field: 'userId', display: 'User'},
-                        { field: 'occurred', display: 'Occurred'}
-                    ]})
+                    React.createElement(DataTable, {sortBy: 'occurred', sortAsc: false, data: this.state.details, 
+                        columnDefinitions: [
+                            { field: 'errorType', display: 'Type'},
+                            { field: 'errorDescription', display: 'Description'},
+                            { field: 'objectName', display: 'Object'},
+                            { field: 'subName', display: 'Sub'},
+                            { field: 'stackTrace', display: 'Stack Trace', onRender: this.renderStackTrace},
+                            { field: 'state', display: 'State', onRender: this.renderJsonTree},
+                            { field: 'details', display: 'Details', onRender: this.renderJsonTree},
+                            { field: 'userId', display: 'User'},
+                            { field: 'occurred', display: 'Occurred', justify: 'right'}
+                        ]})
                 )
             )
         );
+    },
+    renderStackTrace: function (data, field, index) {
+        var locationMatch = /\((.*?):(\d+):(\d+)\)/;
+        return data.stackTrace.split(' at ').slice(1).map(function (item, i) {
+            console.log(item);
+            var location = locationMatch.exec(item);
+            
+            if (location != null) {
+                var clean = item.replace(location[0], '').trim();
+                return (
+                    React.createElement("div", null, React.createElement("a", {target: "_blank", href: location[1]}, React.createElement("span", {"data-toggle": "tooltip", "data-placement": "right", title: location[0]}, clean)))
+                );
+            } else {
+                return (
+                    React.createElement("div", null, item)  
+                );
+            }
+            
+        });
+    },
+    renderJsonTree: function (data, field, index) {
+        return data[field].split(',').map(function (item, i) {
+            return (
+                React.createElement("div", null, item)  
+            );
+        });
     },
     handleClose: function(event) {
         // hide the modal
@@ -466,8 +595,6 @@ var StatusPage = React.createClass({displayName: "StatusPage",
             }
         }
 
-
-        
         if (needsFreshData) {
             this.getHourlySummary(stateChange.criteria_product || this.state.criteria_product, 
                                   stateChange.criteria_environment || this.state.criteria_environment, 
