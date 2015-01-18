@@ -22,24 +22,24 @@ var ErrorHistoryModal = React.createClass({
                     <ul id="modalStatsInfo">
                         {nuggets}
                     </ul>
-                    <DataTable sortBy={'occurred'} sortAsc={false} data={this.state.details} columnDefinitions={[
-                        { field: 'errorType', display: 'Type'},
-                        { field: 'errorDescription', display: 'Description'},
-                        { field: 'objectName', display: 'Object'},
-                        { field: 'subName', display: 'Sub'},
-                        { field: 'stackTrace', display: 'Stack Trace', onRender: this.renderStackTrace},
-                        { field: 'state', display: 'State', limitLength: 100},
-                        { field: 'details', display: 'Details', limitLength: 100},
-                        { field: 'userId', display: 'User'},
-                        { field: 'occurred', display: 'Occurred'}
-                    ]} />
+                    <DataTable sortBy={'occurred'} sortAsc={false} data={this.state.details} 
+                        columnDefinitions={[
+                            { field: 'errorType', display: 'Type'},
+                            { field: 'errorDescription', display: 'Description'},
+                            { field: 'objectName', display: 'Object'},
+                            { field: 'subName', display: 'Sub'},
+                            { field: 'stackTrace', display: 'Stack Trace', onRender: this.renderStackTrace},
+                            { field: 'state', display: 'State', onRender: this.renderJsonTree},
+                            { field: 'details', display: 'Details', onRender: this.renderJsonTree},
+                            { field: 'userId', display: 'User'},
+                            { field: 'occurred', display: 'Occurred', justify: 'right'} 
+                        ]} />
                 </div>
             </Modal>
         );
     },
     renderStackTrace: function (data, field, index) {
         var locationMatch = /\((.*?):(\d+):(\d+)\)/;
-        
         return data.stackTrace.split(' at ').slice(1).map(function (item, i) {
             console.log(item);
             var location = locationMatch.exec(item);
@@ -55,6 +55,13 @@ var ErrorHistoryModal = React.createClass({
                 );
             }
             
+        });
+    },
+    renderJsonTree: function (data, field, index) {
+        return data[field].split(',').map(function (item, i) {
+            return (
+                <div>{item}</div>  
+            );
         });
     },
     handleClose: function(event) {
