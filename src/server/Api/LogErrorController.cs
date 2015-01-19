@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace Errl.Server.Controllers
 {
@@ -28,7 +29,8 @@ namespace Errl.Server.Controllers
             public string UserId { get; set; }
         }
 
-        //[EnableCors("*", "*", "*")]
+        [AllowAnonymous]
+        [EnableCors("*", "*", "*", SupportsCredentials = true)]
         public string Post([FromBody] ErrorModel err)
         {
             try

@@ -28,6 +28,7 @@ namespace Errl.Server
 
             // basic authentication handler
             //config.MessageHandlers.Add(new AuthenticationHandler());
+            config.EnableCors();
         }
     }
 }

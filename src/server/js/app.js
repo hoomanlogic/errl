@@ -4,8 +4,8 @@
     'use strict';
 
     ns.HTTP = 'http';
-    ns.HOST_NAME = 'localhost:42026';
-    //ns.HOST_NAME = 'errl.hoomanlogic.com';
+    //ns.HOST_NAME = 'localhost:42026';
+    ns.HOST_NAME = 'errl.hoomanlogic.com';
 
     // configure error logger
     errl.config = {
