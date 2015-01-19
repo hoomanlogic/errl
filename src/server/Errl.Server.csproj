@@ -262,12 +262,11 @@
     <Content Include="fonts\FontAwesome.otf" />
     <Content Include="Global.asax" />
     <Content Include="js\app.js" />
-    <Content Include="js\common.js" />
+    <Content Include="js\app.min.js" />
     <Content Include="js\jquery.min.js" />
     <Content Include="js\libs.min.js" />
     <Content Include="js\react.min.js" />
     <Content Include="js\reports.js" />
-    <Content Include="js\status.js" />
     <Content Include="Areas\HelpPage\Views\Web.config" />
     <Content Include="Areas\HelpPage\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\ResourceModel.cshtml" />
@@ -339,6 +338,11 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="js\app.min.js.map">
+      <DependentUpon>app.min.js</DependentUpon>
+    </Content>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

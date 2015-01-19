@@ -21,7 +21,7 @@ gulp.task('compile-jsx', function () {
 		}))
         .pipe(concat('views.js'))
         .pipe(react())
-        .pipe(gulp.dest('src/server/js'));
+        .pipe(gulp.dest('build'));
 });
 
 // TASK: Compile LESS source
@@ -42,11 +42,26 @@ gulp.task('compile-less', function () {
 
 // TASK: Concat Js Libs
 gulp.task('concat-js-libs', function () {
-    return gulp.src(['lib/jquery/jquery-1.11.1.min.js', 'lib/underscore/underscore.min.js', 'lib/bootstrap/js/bootstrap.min.js', 'lib/toastr/js/toastr.min.js', 'lib/chart/Chart.js', '../errl_js/dist/*.min.js'])
+    return gulp.src(['lib/jquery/jquery-1.11.1.min.js', 'lib/underscore/underscore.min.js', 'lib/bootstrap/js/bootstrap.min.js', 'lib/toastr/js/toastr.min.js', 'lib/chart/Chart.js', '../errl_js/dist/*.min.js', '../common_js/dist/common.min.js'])
 		.pipe(plumber({
 			errorHandler: onError
 		}))
         .pipe(concat('libs.min.js'))
+        .pipe(gulp.dest('src/server/js'));
+});
+
+// TASK: Concat Js Internal Code
+gulp.task('concat-js-app', ['compile-jsx'], function () {
+    return gulp.src(['src/client/js/*.js', 'build/views.js'])
+		.pipe(plumber({
+			errorHandler: onError
+		}))
+        .pipe(concat('app.js'))
+        .pipe(gulp.dest('src/server/js'))
+		.pipe(rename(function (path) {
+            path.basename += '.min';
+        }))
+        .pipe(uglify())
         .pipe(gulp.dest('src/server/js'));
 });
 
@@ -62,7 +77,7 @@ gulp.task('concat-css-libs', function () {
 
 gulp.task('watch', function () {
 	// Watch JSX source and recompile whenever a change occurs
-	var jsxWatcher = gulp.watch(['../react_components/src/**', 'src/client/jsx/components/**', 'src/client/jsx/pages/**'], ['compile-jsx']);
+	var jsxWatcher = gulp.watch(['../react_components/src/**', 'src/client/jsx/components/**', 'src/client/jsx/pages/**', 'src/client/js/**'], ['compile-jsx', 'concat-js-app']);
 	jsxWatcher.on('change', function (event) {
 		console.log('File ' + event.path + ' was ' + event.type + ', running task...');
 	});
@@ -74,7 +89,7 @@ gulp.task('watch', function () {
 	});
 	
 	// Watch Internal JS Libraries for Updates
-	var jsLibWatcher = gulp.watch(['../errl_js/dist/*.min.js'], ['concat-js-libs']);
+	var jsLibWatcher = gulp.watch(['../errl_js/dist/*.min.js', '../common_js/dist/common.min.js'], ['concat-js-libs']);
 	jsLibWatcher.on('change', function (event) {
 		console.log('File ' + event.path + ' was ' + event.type + ', running task...');
 	});
