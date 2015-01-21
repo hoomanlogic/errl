@@ -3,15 +3,14 @@ var app = app || {};
 (function (ns, $) {
     'use strict';
 
-    ns.HTTP = 'http';
-    //ns.HOST_NAME = 'localhost:42026';
-    ns.HOST_NAME = 'errl.hoomanlogic.com';
-
+    // pull base url from current location
+    ns.HOST_NAME = window.location.href.split('/').slice(0, 3).join('/');
+    
     // configure error logger
     errl.config = {
         developer: 'hoomanlogic',
         key: '54263eb4-6ced-49bf-9bd7-14f0106c2a02',
-        product: 'ErrL',
+        product: 'Errl',
         environment: null,
         version: '1.0.0',
         getState: null,
@@ -21,7 +20,7 @@ var app = app || {};
         onLogged: function (err) {
             toastr.error("<p><string>Oops!</strong></p><p>We're really sorry about that.</p><p>We'll get this fixed as soon as possible.</p>" + '<a class="btn btn-default btn-link" target="_blank" href="' + errl.getErrorDetailUrl(err.errorId) + '">Show me details</a> ');
         }
-    }
+    };
 
     // Data access operations
     ns.setAccessToken = function (accessToken) {

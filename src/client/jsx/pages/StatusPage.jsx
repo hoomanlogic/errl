@@ -215,7 +215,7 @@ var StatusPage = React.createClass({
             headers: {
                 'Authorization': 'Bearer ' + app.getAccessToken()
             },
-            url: app.HTTP + '://' + app.HOST_NAME + '/api/hourlysummary' +
+            url: app.HOST_NAME + '/api/hourlysummary' +
                 '?product=' + encodeURIComponent(product) +
                 '&environment=' + encodeURIComponent(environment) +
                 '&version=' + encodeURIComponent(version) +
@@ -370,7 +370,7 @@ var StatusPage = React.createClass({
             headers: {
                 'Authorization': 'Bearer ' + app.getAccessToken()
             },
-            url: app.HTTP + '://' + app.HOST_NAME + '/api/errorsummary' +
+            url: app.HOST_NAME + '/api/errorsummary' +
                 '?product=' + encodeURIComponent(product) +
                 '&environment=' + encodeURIComponent(environment) +
                 '&version=' + encodeURIComponent(version) +
@@ -464,7 +464,7 @@ var StatusPage = React.createClass({
             headers: {
                 'Authorization': 'Bearer ' + app.getAccessToken()
             },
-            url: app.HTTP + '://' + app.HOST_NAME + '/api/options'
+            url: app.HOST_NAME + '/api/options'
         }).done(function (options) {
             
             var selectedProduct = null;
@@ -547,7 +547,7 @@ var StatusPage = React.createClass({
             headers: {
                 'Authorization': 'Bearer ' + app.getAccessToken()
             },
-            url: app.HTTP + '://' + app.HOST_NAME + '/api/errorhistory' +
+            url: app.HOST_NAME + '/api/errorhistory' +
                 '?environment=' + encodeURIComponent(this.state.criteria_environment) +
                 '&version=' +
                 '&errorType=' + errorType +
@@ -567,7 +567,7 @@ var StatusPage = React.createClass({
             headers: {
                 'Authorization': 'Bearer ' + app.getAccessToken()
             },
-            url: app.HTTP + '://' + app.HOST_NAME + '/api/needsrefresh' +
+            url: app.HOST_NAME + '/api/needsrefresh' +
                 '?product=' + encodeURIComponent(this.state.criteria_product) +
                 '&environment=' + encodeURIComponent(this.state.criteria_environment) +
                 '&version=' + encodeURIComponent(this.state.criteria_version) +

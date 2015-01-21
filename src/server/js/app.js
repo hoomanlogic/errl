@@ -3,15 +3,14 @@ var app = app || {};
 (function (ns, $) {
     'use strict';
 
-    ns.HTTP = 'http';
-    ns.HOST_NAME = 'localhost:42026';
-    //ns.HOST_NAME = 'errl.hoomanlogic.com';
-
+    // pull base url from current location
+    ns.HOST_NAME = window.location.href.split('/').slice(0, 3).join('/');
+    
     // configure error logger
     errl.config = {
         developer: 'hoomanlogic',
         key: '54263eb4-6ced-49bf-9bd7-14f0106c2a02',
-        product: 'ErrL',
+        product: 'Errl',
         environment: null,
         version: '1.0.0',
         getState: null,
@@ -21,7 +20,7 @@ var app = app || {};
         onLogged: function (err) {
             toastr.error("<p><string>Oops!</strong></p><p>We're really sorry about that.</p><p>We'll get this fixed as soon as possible.</p>" + '<a class="btn btn-default btn-link" target="_blank" href="' + errl.getErrorDetailUrl(err.errorId) + '">Show me details</a> ');
         }
-    }
+    };
 
     // Data access operations
     ns.setAccessToken = function (accessToken) {
@@ -100,7 +99,7 @@ var DataTable = React.createClass({displayName: "DataTable",
     getInitialState: function () {
         return { 
             sortBy: (this.props.sortBy || this.props.columnDefinitions[0].field), 
-            sortAsc: true
+            sortAsc: (this.props.sortAsc !== void 0 ? this.props.sortAsc : true)
         };
     },
     componentDidUpdate: function () {
@@ -114,8 +113,8 @@ var DataTable = React.createClass({displayName: "DataTable",
         // props
         var colDefs = this.props.columnDefinitions;
         var data = _.sortBy(this.props.data, function(item){ return item[sortBy]; });
-        if (!sortAsc) {
-            data.reverse();   
+        if (sortAsc !== true) {
+            data.reverse();
         }
         
         // minimum data requirement
@@ -686,7 +685,7 @@ var StatusPage = React.createClass({displayName: "StatusPage",
             headers: {
                 'Authorization': 'Bearer ' + app.getAccessToken()
             },
-            url: app.HTTP + '://' + app.HOST_NAME + '/api/hourlysummary' +
+            url: app.HOST_NAME + '/api/hourlysummary' +
                 '?product=' + encodeURIComponent(product) +
                 '&environment=' + encodeURIComponent(environment) +
                 '&version=' + encodeURIComponent(version) +
@@ -841,7 +840,7 @@ var StatusPage = React.createClass({displayName: "StatusPage",
             headers: {
                 'Authorization': 'Bearer ' + app.getAccessToken()
             },
-            url: app.HTTP + '://' + app.HOST_NAME + '/api/errorsummary' +
+            url: app.HOST_NAME + '/api/errorsummary' +
                 '?product=' + encodeURIComponent(product) +
                 '&environment=' + encodeURIComponent(environment) +
                 '&version=' + encodeURIComponent(version) +
@@ -935,7 +934,7 @@ var StatusPage = React.createClass({displayName: "StatusPage",
             headers: {
                 'Authorization': 'Bearer ' + app.getAccessToken()
             },
-            url: app.HTTP + '://' + app.HOST_NAME + '/api/options'
+            url: app.HOST_NAME + '/api/options'
         }).done(function (options) {
             
             var selectedProduct = null;
@@ -1018,7 +1017,7 @@ var StatusPage = React.createClass({displayName: "StatusPage",
             headers: {
                 'Authorization': 'Bearer ' + app.getAccessToken()
             },
-            url: app.HTTP + '://' + app.HOST_NAME + '/api/errorhistory' +
+            url: app.HOST_NAME + '/api/errorhistory' +
                 '?environment=' + encodeURIComponent(this.state.criteria_environment) +
                 '&version=' +
                 '&errorType=' + errorType +
@@ -1038,7 +1037,7 @@ var StatusPage = React.createClass({displayName: "StatusPage",
             headers: {
                 'Authorization': 'Bearer ' + app.getAccessToken()
             },
-            url: app.HTTP + '://' + app.HOST_NAME + '/api/needsrefresh' +
+            url: app.HOST_NAME + '/api/needsrefresh' +
                 '?product=' + encodeURIComponent(this.state.criteria_product) +
                 '&environment=' + encodeURIComponent(this.state.criteria_environment) +
                 '&version=' + encodeURIComponent(this.state.criteria_version) +
