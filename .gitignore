@@ -189,3 +189,4 @@ _Pvt_Extensions/
 ModelManifest.xml
 /src/server/Web.Debug.config
 /src/server/Web.Release.config
+/bower_components

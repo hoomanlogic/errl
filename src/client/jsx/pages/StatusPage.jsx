@@ -152,10 +152,6 @@ var StatusPage = React.createClass({
             </div>
         );
     },
-    selectedProductChanged: function () {
-        app.getHourlySummary(); 
-        app.refreshOptions('Product');
-    },
     openErrorHistory: function (field, row) {
         if (field === 'errorType') {
             this.popupErrorDetails(row.errorType, '', '');
@@ -212,9 +208,6 @@ var StatusPage = React.createClass({
         $.ajax({
             context: this,
             type: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + app.getAccessToken()
-            },
             url: app.HOST_NAME + '/api/hourlysummary' +
                 '?product=' + encodeURIComponent(product) +
                 '&environment=' + encodeURIComponent(environment) +
@@ -258,16 +251,6 @@ var StatusPage = React.createClass({
             }
             
             this.setState({ hourlySummaryResult: result, fromOptions: fromOptions, toOptions: toOptions, criteria_from: selectedFrom.value, criteria_to: selectedTo.value });
-
-            //ns.refreshHourlySummary();
-
-            //if (typeof preserveDetail !== 'undefined' && typeof ns.lastDateClicked !== 'undefined') {
-            //    ns.getErrorSummary(ns.lastDateClicked, ns.lastHourClicked);
-            //} else {
-            //    $('#errorSummarySection').attr('hidden', true);
-            //}
-
-            //ns.poller = window.setInterval(ns.pollNeedsRefresh, 15000);
 
         }).fail(function (jqXHR, textStatus, errorThrown) {
             // notify error
@@ -367,9 +350,6 @@ var StatusPage = React.createClass({
         $.ajax({
             context: this,
             type: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + app.getAccessToken()
-            },
             url: app.HOST_NAME + '/api/errorsummary' +
                 '?product=' + encodeURIComponent(product) +
                 '&environment=' + encodeURIComponent(environment) +
@@ -461,9 +441,6 @@ var StatusPage = React.createClass({
         $.ajax({
             context: this,
             type: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + app.getAccessToken()
-            },
             url: app.HOST_NAME + '/api/options'
         }).done(function (options) {
             
@@ -522,7 +499,7 @@ var StatusPage = React.createClass({
                 versions.push(options[index].version);
             }
         }
-        
+        versions.reverse();
         return versions;
     },
     handleLineChartLabelClick: function (evt) {
@@ -544,9 +521,6 @@ var StatusPage = React.createClass({
         $.ajax({
             context: this,
             type: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + app.getAccessToken()
-            },
             url: app.HOST_NAME + '/api/errorhistory' +
                 '?environment=' + encodeURIComponent(this.state.criteria_environment) +
                 '&version=' +
@@ -561,12 +535,8 @@ var StatusPage = React.createClass({
         });
     },
     pollNeedsRefresh: function () {
-        // ajax call: get http://~/api/shipping
         $.ajax({
             type: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + app.getAccessToken()
-            },
             url: app.HOST_NAME + '/api/needsrefresh' +
                 '?product=' + encodeURIComponent(this.state.criteria_product) +
                 '&environment=' + encodeURIComponent(this.state.criteria_environment) +
