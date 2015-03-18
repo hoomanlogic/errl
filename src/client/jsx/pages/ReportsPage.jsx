@@ -520,7 +520,7 @@ var ReportsPage = React.createClass({
             context: this,
             type: 'GET',
             headers: {
-                'Authorization': 'Bearer ' + app.getAccessToken()
+                'Authorization': 'Bearer ' + appapp.getAccessToken()
             },
             url: app.HOST_NAME + '/api/reportoptions'
         }).done(function (options) {
