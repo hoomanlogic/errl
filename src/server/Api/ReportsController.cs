@@ -11,7 +11,17 @@ namespace Errl.Server.Controllers.Api
     [Authorize]
     public class ReportsController : ApiController
     {
-        public dynamic GetReport_RecentVersionsComparison(string report, string product, string environment)
+        public dynamic Get(string report, string product, string environment)
+        {
+            switch (report) {
+                case ("Recent Versions Comparison"):
+                    return Report_RecentVersionsComparison(product, environment);
+            }
+
+            return false;
+        }
+
+        private dynamic Report_RecentVersionsComparison(string product, string environment)
         {
             string query1 = 
                 "SELECT TOP 3 Sub.[Version], Ver.EarliestError AS RolledOutOn, DATEDIFF(d, Ver.EarliestError, Ver.LatestError) AS DaysRunning, AVG(Sub.TimesOccurred) AS AverageErrorsPerHour, AVG(Sub.UsersAffected) AS AverageUsersAffectedPerHour " +
@@ -23,7 +33,7 @@ namespace Errl.Server.Controllers.Api
                 "        REPLICATE('0', 2 - LEN(CAST(DATEPART(hh, Occurred) AS VARCHAR(2)))) + CAST(DATEPART(hh, Occurred) AS VARCHAR(2)) AS [Hour],  " +
                 "        COUNT(*) AS TimesOccurred, COUNT(DISTINCT UserId) AS UsersAffected " +
                 "    FROM [errl].[Errors] WITH (NOLOCK) " +
-                "    WHERE [Version] NOT LIKE 'SL%' AND [Version] NOT LIKE '0.%'  " +
+                "    WHERE [ProductName] = '" + product + "' AND [Environment] = '" + environment + "' " +
                 "    GROUP BY LEFT([Version], 5),  " +
                 "        CAST(DATEPART(yyyy, Occurred) AS VARCHAR(4)),  " +
                 "        REPLICATE('0', 2 - LEN(CAST(DATEPART(mm, Occurred) AS VARCHAR(2)))) + CAST(DATEPART(mm, Occurred) AS VARCHAR(2)),  " +
@@ -35,7 +45,7 @@ namespace Errl.Server.Controllers.Api
                 "           MAX(Occurred) AS LatestError,  " +
                 "           COUNT(DISTINCT ErrorType + '|' + ObjectName + '|' + SubName) AS NumOfIssues " +
                 "    FROM [errl].[Errors] WITH (NOLOCK) " +
-                "    WHERE [Version] NOT LIKE 'SL%' AND [Version] NOT LIKE '0.%'  " +
+                "    WHERE [ProductName] = '" + product + "' AND [Environment] = '" + environment + "' " +
                 "    GROUP BY LEFT([Version], 5)  " +
                 ") AS Ver ON Sub.[Version] = Ver.[Version] " +
                 "GROUP BY Sub.[Version], Ver.EarliestError, Ver.LatestError " +
@@ -48,7 +58,7 @@ namespace Errl.Server.Controllers.Api
                 "        REPLICATE('0', 2 - LEN(CAST(DATEPART(hh, Occurred) AS VARCHAR(2)))) + CAST(DATEPART(hh, Occurred) AS VARCHAR(2)) AS [Hour], " +
                 "        COUNT(*) AS TimesOccurred " +
                 "    FROM [errl].[Errors] WITH (NOLOCK) " +
-                "    WHERE [Version] NOT LIKE 'SL%' AND [Version] NOT LIKE '0.%'  " +
+                "    WHERE [ProductName] = '" + product + "' AND [Environment] = '" + environment + "' " +
                 "    GROUP BY LEFT([Version], 5),  " +
                 "        REPLICATE('0', 2 - LEN(CAST(DATEPART(hh, Occurred) AS VARCHAR(2)))) + CAST(DATEPART(hh, Occurred) AS VARCHAR(2)) " +
                 ") AS Sub  " +
@@ -66,7 +76,7 @@ namespace Errl.Server.Controllers.Api
                 "        REPLICATE('0', 2 - LEN(CAST(DATEPART(hh, Occurred) AS VARCHAR(2)))) + CAST(DATEPART(hh, Occurred) AS VARCHAR(2)) AS [Hour], " +
                 "        COUNT(DISTINCT UserId) AS UsersAffected " +
                 "    FROM [errl].[Errors] WITH (NOLOCK) " +
-                "    WHERE [Version] NOT LIKE 'SL%' AND [Version] NOT LIKE '0.%'  " +
+                "    WHERE [ProductName] = '" + product + "' AND [Environment] = '" + environment + "' " +
                 "    GROUP BY LEFT([Version], 5),  " +
                 "        REPLICATE('0', 2 - LEN(CAST(DATEPART(hh, Occurred) AS VARCHAR(2)))) + CAST(DATEPART(hh, Occurred) AS VARCHAR(2)) " +
                 ") AS Sub  " +
@@ -84,7 +94,7 @@ namespace Errl.Server.Controllers.Api
                 "        REPLICATE('0', 2 - LEN(CAST(DATEPART(hh, Occurred) AS VARCHAR(2)))) + CAST(DATEPART(hh, Occurred) AS VARCHAR(2)) AS [Hour], " +
                 "        COUNT(DISTINCT ErrorType + '|' + ObjectName + '|' + SubName) AS NumOfIssues " +
                 "    FROM [errl].[Errors] WITH (NOLOCK) " +
-                "    WHERE [Version] NOT LIKE 'SL%' AND [Version] NOT LIKE '0.%'  " +
+                "    WHERE [ProductName] = '" + product + "' AND [Environment] = '" + environment + "' " +
                 "    GROUP BY LEFT([Version], 5),  " +
                 "        REPLICATE('0', 2 - LEN(CAST(DATEPART(hh, Occurred) AS VARCHAR(2)))) + CAST(DATEPART(hh, Occurred) AS VARCHAR(2)) " +
                 ") AS Sub  " +
@@ -102,7 +112,7 @@ namespace Errl.Server.Controllers.Api
                 "        REPLICATE('0', 2 - LEN(CAST(DATEPART(hh, Occurred) AS VARCHAR(2)))) + CAST(DATEPART(hh, Occurred) AS VARCHAR(2)) AS [Hour], " +
                 "        COUNT(DISTINCT REPLICATE('0', 2 - LEN(CAST(DATEPART(dd, Occurred) AS VARCHAR(2)))) + CAST(DATEPART(dd, Occurred) AS VARCHAR(2)) + REPLICATE('0', 2 - LEN(CAST(DATEPART(mm, Occurred) AS VARCHAR(2)))) + CAST(DATEPART(mm, Occurred) AS VARCHAR(2)) ) AS NumOfDays " +
                 "    FROM [errl].[Errors] WITH (NOLOCK) " +
-                "    WHERE [Version] NOT LIKE 'SL%' AND [Version] NOT LIKE '0.%'  " +
+                "    WHERE [ProductName] = '" + product + "' AND [Environment] = '" + environment + "' " +
                 "    GROUP BY LEFT([Version], 5),  " +
                 "        REPLICATE('0', 2 - LEN(CAST(DATEPART(hh, Occurred) AS VARCHAR(2)))) + CAST(DATEPART(hh, Occurred) AS VARCHAR(2)) " +
                 ") AS Sub  " +
@@ -133,8 +143,9 @@ namespace Errl.Server.Controllers.Api
                     {
                         while (reader.Read())
                         {
-                            list2.Add( new { 
-                                Version = reader.GetString(0), 
+                            list2.Add(new
+                            {
+                                Version = reader.GetString(0),
                                 Hour07 = reader.GetInt32(1),
                                 Hour08 = reader.GetInt32(2),
                                 Hour09 = reader.GetInt32(3),
@@ -251,7 +262,6 @@ namespace Errl.Server.Controllers.Api
                     }
                 }
                 return new { Query2 = list2, Query3 = list3, Query4 = list4, Query5 = list5 };
-
             }
         }
     }

@@ -1,17 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
+using System.Data.SqlClient;
 
 namespace Errl.Server.Controllers
 {
     [Authorize]
     public class ReportsController : Controller
     {
-        // GET: Statistics
         public ActionResult Index()
         {
+            string userId = User.Identity.GetUserId();
+
+            if (!Helpers.IsDeveloperReady(userId))
+            {
+                return RedirectToAction("Index", "Developer");
+            }
+
             return View();
         }
     }

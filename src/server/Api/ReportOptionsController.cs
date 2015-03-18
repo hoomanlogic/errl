@@ -5,13 +5,16 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Microsoft.AspNet.Identity;
 
 namespace Errl.Server.Controllers
 {
+    [Authorize]
     public class ReportOptionsController : ApiController
     {
         public dynamic Get()
         {
+            string userId = User.Identity.GetUserId();
 
             List<dynamic> Distributions = new List<dynamic>();
 
@@ -27,8 +30,11 @@ namespace Errl.Server.Controllers
                         command.CommandType = System.Data.CommandType.Text;
                         command.CommandText =
                             "SELECT DISTINCT ProductName, Environment " +
-                            "FROM [dbo].[Errors] e WITH (NOLOCK) " +
+                            "FROM [errl].[Errors] e WITH (NOLOCK) INNER JOIN [errl].[UsersDevelopers] ud WITH (NOLOCK) ON e.[DeveloperId] = ud.[DeveloperId] " +
+                            "WHERE ud.[UserId] = @UserId " +
                             "ORDER BY ProductName, Environment";
+
+                        command.Parameters.Add(new SqlParameter("@UserId", userId));
 
                         using (SqlDataReader reader = command.ExecuteReader())
                         {

@@ -148,6 +148,9 @@ var ReportsPage = React.createClass({
         $.ajax({
             context: this,
             type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + app.getAccessToken()
+            },
             url: app.HOST_NAME + '/api/reports' +
                 '?report=' + encodeURIComponent(report) +
                 '&product=' + encodeURIComponent(product) +
@@ -516,6 +519,9 @@ var ReportsPage = React.createClass({
         $.ajax({
             context: this,
             type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + app.getAccessToken()
+            },
             url: app.HOST_NAME + '/api/reportoptions'
         }).done(function (options) {
             
