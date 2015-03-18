@@ -118,7 +118,7 @@ gulp.task('watch', function () {
 });
 
 // TODO: Finish this to compile from local sources instead of bower
-gulp.task('watch-local' function () {
+gulp.task('watch-local', function () {
 
     // Watch JSX source and recompile whenever a change occurs
     var jsxWatcher = gulp.watch(['../react_components/src/*.jsx'], ['compile-local-jsx-local', 'concat-local-js']);
