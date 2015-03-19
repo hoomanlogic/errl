@@ -59,7 +59,7 @@ var StatusPage = React.createClass({
         });
             
         var hourlySummary = null;
-        if (hourlySummaryResult) {
+        if (hourlySummaryResult && this.state.toOptions && this.state.toOptions.length > 0) {
             hourlySummary = (
                 <div>
                     <h3 id="headingHourly">Hourly Summary</h3>
@@ -218,8 +218,7 @@ var StatusPage = React.createClass({
                 '&date='
         }).done(function (result) {
             
-            // flag canvas for rerender
-            this.hourlySummaryNeedsCanvasRender = true;
+            
             
             // build from and to option lists
             var fromOptions = [];
@@ -253,7 +252,23 @@ var StatusPage = React.createClass({
                 }
             }
             
-            this.setState({ hourlySummaryResult: result, fromOptions: fromOptions, toOptions: toOptions, criteria_from: selectedFrom.value, criteria_to: selectedTo.value });
+            if (toOptions.length === 0) {
+                var date = selectedFrom.label.split(" ")[0].replace('/', '-').replace('/', '-');
+                var hour = selectedFrom.label.split(" ")[1];
+
+                this.getErrorSummary(this.state.criteria_product, this.state.criteria_environment, this.state.criteria_version, date, hour);
+            } else {
+                // flag canvas for rerender
+                this.hourlySummaryNeedsCanvasRender = true;
+            }
+            
+            this.setState({ 
+                hourlySummaryResult: result, 
+                fromOptions: fromOptions, 
+                toOptions: toOptions, 
+                criteria_from: selectedFrom.value, 
+                criteria_to: (selectedTo ? selectedTo.value : null)  // could be null when there is only one option
+            });
 
         }).fail(function (jqXHR, textStatus, errorThrown) {
             // notify error
