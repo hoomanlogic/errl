@@ -18,7 +18,7 @@ namespace Errl.Server.Controllers
             {
                 return RedirectToAction("Index", "Developer");
             }
-
+            ViewBag.Version = System.Configuration.ConfigurationManager.AppSettings["ErrlVersion"];
             return View();
         }
     }

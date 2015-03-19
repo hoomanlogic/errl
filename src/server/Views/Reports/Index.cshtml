@@ -2,7 +2,7 @@
 @Html.Partial("_SessionPartial")
 @section scripts {
     <script src="~/js/libs.min.js"></script>
-    <script src="~/js/app.js"></script>
+    <script src="~/js/app.js?@ViewBag.Version"></script>
     <script type="text/javascript">
         $().ready(function () {
             $('#navReports').toggleClass('active');
