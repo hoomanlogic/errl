@@ -99,7 +99,7 @@ var DataTable = React.createClass({displayName: "DataTable",
     getInitialState: function () {
         return { 
             sortBy: (this.props.sortBy || this.props.columnDefinitions[0].field), 
-            sortAsc: true
+            sortAsc: (this.props.sortAsc !== void 0 ? this.props.sortAsc : true)
         };
     },
     componentDidUpdate: function () {
@@ -113,8 +113,8 @@ var DataTable = React.createClass({displayName: "DataTable",
         // props
         var colDefs = this.props.columnDefinitions;
         var data = _.sortBy(this.props.data, function(item){ return item[sortBy]; });
-        if (!sortAsc) {
-            data.reverse();   
+        if (sortAsc !== true) {
+            data.reverse();
         }
         
         // minimum data requirement
@@ -137,8 +137,6 @@ var DataTable = React.createClass({displayName: "DataTable",
             domHeadColumns.push(domHeadColumn);
         };
     
-        // todo: sort data, probably w/ underscore
-        
         if (data) {
             // define rows
             for (j = 0; j < data.length; j++) {
@@ -237,14 +235,26 @@ var DropdownMenu = React.createClass({displayName: "DropdownMenu",
           className = ' ' + className; 
         }
       
-        return (
-            React.createElement("li", {ref: "dropdown", className: 'dropdown' + className, onClick: this.toggle}, 
-                React.createElement("a", {href: "#", "data-toggle": "dropdown", className: "dropdown-toggle", style: style}, buttonContent), 
-                React.createElement("ul", {className: "dropdown-menu"}, 
-                  menuItems
+        if (this.props.useDiv && this.props.useDiv === true) {
+            return (
+                React.createElement("div", {ref: "dropdown", className: 'dropdown' + className, onClick: this.toggle}, 
+                    React.createElement("a", {href: "#", "data-toggle": "dropdown", className: "dropdown-toggle", style: style}, buttonContent), 
+                    React.createElement("ul", {className: "dropdown-menu"}, 
+                      menuItems
+                    )
                 )
-            )
-        );
+            );
+        } else {
+            return (
+                React.createElement("li", {ref: "dropdown", className: 'dropdown' + className, onClick: this.toggle}, 
+                    React.createElement("a", {href: "#", "data-toggle": "dropdown", className: "dropdown-toggle", style: style}, buttonContent), 
+                    React.createElement("ul", {className: "dropdown-menu"}, 
+                      menuItems
+                    )
+                )
+            );
+        }
+
     },
     toggle: function () {
         var $win = $(window);
@@ -263,19 +273,31 @@ var DropdownMenu = React.createClass({displayName: "DropdownMenu",
     }
 });
 var Modal = React.createClass({displayName: "Modal",
+    getBuffer: function () {
+        var buffer = $( ".modal-dialog").offset().top * 2;
+        if (buffer > 60) {
+            buffer = 60;
+        }
+        buffer += $( ".modal-header").innerHeight();
+        buffer += $( ".modal-footer").innerHeight();
+        return buffer;
+    },
     getDefaultProps: function () { 
         return {
             backdrop: true, 
             buttons: [],
             keyboard: true, 
             show: true, 
-            remote: ''
+            remote: '',
+            overflowX: 'none',
+            overflowY: 'scroll'
         }
-    }, 
+    },
     render: function () {
         var buttons = this.props.buttons.map(function(button, index) {
             return React.createElement("button", {key: index, type: "button", className: 'btn btn-' + button.type, onClick: button.handler}, button.text)
         })
+        
         return (
             React.createElement("div", {className: "modal fade"}, 
                 React.createElement("div", {className: "modal-dialog"}, 
@@ -283,7 +305,7 @@ var Modal = React.createClass({displayName: "Modal",
                         React.createElement("div", {className: "modal-header"}, 
                             this.renderCloseButton(), React.createElement("strong", null, this.props.header)
                         ), 
-                        React.createElement("div", {className: "modal-body scroll"}, 
+                        React.createElement("div", {className: "modal-body scroll", style: { height: ($( window ).innerHeight() - 174) + 'px', overflowX: this.props.overflowX, overflowY: this.props.overflowY}}, 
                             this.props.children
                         ), 
                         React.createElement("div", {className: "modal-footer"}, 
@@ -303,7 +325,10 @@ var Modal = React.createClass({displayName: "Modal",
       
         window.setTimeout(function() {
             domThis.css('display', 'none');
-        }, 150);
+        }.bind(this), 150);
+        
+        // unbind modal resize from window resize
+        $( window ).unbind('resize', this.resizeModal);
     },
     show: function () {
         var domThis = $(this.getDOMNode());
@@ -314,8 +339,14 @@ var Modal = React.createClass({displayName: "Modal",
         // not occur
         window.setTimeout(function() {
             domThis.addClass('in');
-        }, 1);
+        }.bind(this), 1);
+        
+        // bind modal resize with window resize
+        $( window ).bind('resize', this.resizeModal);
     },
+    resizeModal: function () {
+        $( ".modal-body" ).css('height', ($( window ).innerHeight() - this.getBuffer()) + 'px');
+    }
 });
 /* Panel
  * ClassNames: panel, panel-[default,primary,success,info,warning,danger], panel-collapse, in, collapse, collapsing, clickable, panel-title, overflow
@@ -411,7 +442,7 @@ var ErrorHistoryModal = React.createClass({displayName: "ErrorHistoryModal",
         }
         
         return (
-            React.createElement(Modal, {ref: "modal", show: false, header: "Error History"}, 
+            React.createElement(Modal, {ref: "modal", show: false, header: "Error History", overflowX: "scroll"}, 
                 React.createElement("div", null, 
                     React.createElement("ul", {id: "modalStatsInfo"}, 
                         nuggets

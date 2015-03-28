@@ -28,7 +28,7 @@ var jsApp = ['src/client/js/*.js', 'build/views.js'];
 var lessPaths = ['src/client/less/definitions/**', 'src/client/less/*.less'];
 
 var jsxPaths = [
-    'bower_components/react_components/src/*.jsx', 
+    '../react_components/src/*.jsx', 
     'src/client/jsx/components/*.jsx', 
     'src/client/jsx/pages/*.jsx'
 ];

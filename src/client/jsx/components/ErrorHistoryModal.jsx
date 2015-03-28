@@ -17,7 +17,7 @@ var ErrorHistoryModal = React.createClass({
         }
         
         return (
-            <Modal ref="modal" show={false} header="Error History">
+            <Modal ref="modal" show={false} header="Error History" overflowX="scroll">
                 <div>
                     <ul id="modalStatsInfo">
                         {nuggets}
