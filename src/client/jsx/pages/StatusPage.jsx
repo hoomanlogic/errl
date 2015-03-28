@@ -15,6 +15,10 @@ var StatusPage = React.createClass({
     },
     componentDidMount: function () {
         this.getOptions();
+        this.refreshInterval = window.setInterval(this.pollNeedsRefresh, 60000);
+    },
+    componentWillUnmount: function () {
+        window.clearInterval(this.refreshInterval);
     },
     hourlySummaryNeedsCanvasRender: false,
     errorSummaryNeedsCanvasRender: false,
@@ -572,7 +576,7 @@ var StatusPage = React.createClass({
                 '&date=' + this.state.hourlySummaryResult.latestPoll
         }).done(function (needsRefresh) {
             if (needsRefresh) {
-                this.getHourlySummary(this.state.criteria_product, this.state.criteria_environment, this.state.criteria_version, true);
+                this.getHourlySummary(this.state.criteria_product, this.state.criteria_environment, this.state.criteria_version);
             }
         });
     }

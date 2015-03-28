@@ -138,9 +138,9 @@ var ReportsPage = React.createClass({
         }
 
         this.getReportData(
+            stateChange.criteria_report || this.state.criteria_report,
             stateChange.criteria_product || this.state.criteria_product, 
-            stateChange.criteria_environment || this.state.criteria_environment, 
-            stateChange.criteria_version || this.state.criteria_version);
+            stateChange.criteria_environment || this.state.criteria_environment);
 
         this.setState(stateChange);
     },
@@ -183,13 +183,21 @@ var ReportsPage = React.createClass({
         }
     },
     createChart1: function (result) {
-        var labels = ['07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19'];
+        var labels = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'];
         var ds1 = [];
         var ds2 = [];
         var ds3 = [];
         var datasets = [];
 
         // populate datasets
+        ds1.push(this.divideIfNotByZero(result.query2[0].hour00, result.query5[0].hour00));
+        ds1.push(this.divideIfNotByZero(result.query2[0].hour01, result.query5[0].hour01));
+        ds1.push(this.divideIfNotByZero(result.query2[0].hour02, result.query5[0].hour02));
+        ds1.push(this.divideIfNotByZero(result.query2[0].hour03, result.query5[0].hour03));
+        ds1.push(this.divideIfNotByZero(result.query2[0].hour04, result.query5[0].hour04));
+        ds1.push(this.divideIfNotByZero(result.query2[0].hour05, result.query5[0].hour05));
+        ds1.push(this.divideIfNotByZero(result.query2[0].hour06, result.query5[0].hour06));
+
         ds1.push(this.divideIfNotByZero(result.query2[0].hour07, result.query5[0].hour07));
         ds1.push(this.divideIfNotByZero(result.query2[0].hour08, result.query5[0].hour08));
         ds1.push(this.divideIfNotByZero(result.query2[0].hour09, result.query5[0].hour09));
@@ -203,6 +211,13 @@ var ReportsPage = React.createClass({
         ds1.push(this.divideIfNotByZero(result.query2[0].hour17, result.query5[0].hour17));
         ds1.push(this.divideIfNotByZero(result.query2[0].hour18, result.query5[0].hour18));
         ds1.push(this.divideIfNotByZero(result.query2[0].hour19, result.query5[0].hour19));
+
+        ds1.push(this.divideIfNotByZero(result.query2[0].hour20, result.query5[0].hour20));
+        ds1.push(this.divideIfNotByZero(result.query2[0].hour21, result.query5[0].hour21));
+        ds1.push(this.divideIfNotByZero(result.query2[0].hour22, result.query5[0].hour22));
+        ds1.push(this.divideIfNotByZero(result.query2[0].hour23, result.query5[0].hour23));
+        ds1.push(this.divideIfNotByZero(result.query2[0].hour24, result.query5[0].hour24));
+        
         datasets.push({
             label: result.query2[0].version,
             fillColor: "rgba(151,187,205,0.2)",
@@ -215,6 +230,14 @@ var ReportsPage = React.createClass({
         });
 
         if (result.query2.length > 1) {
+            ds2.push(this.divideIfNotByZero(result.query2[1].hour00, result.query5[1].hour00));
+            ds2.push(this.divideIfNotByZero(result.query2[1].hour01, result.query5[1].hour01));
+            ds2.push(this.divideIfNotByZero(result.query2[1].hour02, result.query5[1].hour02));
+            ds2.push(this.divideIfNotByZero(result.query2[1].hour03, result.query5[1].hour03));
+            ds2.push(this.divideIfNotByZero(result.query2[1].hour04, result.query5[1].hour04));
+            ds2.push(this.divideIfNotByZero(result.query2[1].hour05, result.query5[1].hour05));
+            ds2.push(this.divideIfNotByZero(result.query2[1].hour06, result.query5[1].hour06));
+            
             ds2.push(this.divideIfNotByZero(result.query2[1].hour07, result.query5[1].hour07));
             ds2.push(this.divideIfNotByZero(result.query2[1].hour08, result.query5[1].hour08));
             ds2.push(this.divideIfNotByZero(result.query2[1].hour09, result.query5[1].hour09));
@@ -228,6 +251,12 @@ var ReportsPage = React.createClass({
             ds2.push(this.divideIfNotByZero(result.query2[1].hour17, result.query5[1].hour17));
             ds2.push(this.divideIfNotByZero(result.query2[1].hour18, result.query5[1].hour18));
             ds2.push(this.divideIfNotByZero(result.query2[1].hour19, result.query5[1].hour19));
+            
+            ds2.push(this.divideIfNotByZero(result.query2[1].hour20, result.query5[1].hour20));
+            ds2.push(this.divideIfNotByZero(result.query2[1].hour21, result.query5[1].hour21));
+            ds2.push(this.divideIfNotByZero(result.query2[1].hour22, result.query5[1].hour22));
+            ds2.push(this.divideIfNotByZero(result.query2[1].hour23, result.query5[1].hour23));
+            ds2.push(this.divideIfNotByZero(result.query2[1].hour24, result.query5[1].hour24));
             datasets.push({
                 label: result.query2[1].version,
                 fillColor: "rgba(151,205,187,0.2)",
@@ -241,6 +270,14 @@ var ReportsPage = React.createClass({
         }
 
         if (result.query2.length > 2) {
+            ds3.push(this.divideIfNotByZero(result.query2[2].hour00, result.query5[2].hour00));
+            ds3.push(this.divideIfNotByZero(result.query2[2].hour01, result.query5[2].hour01));
+            ds3.push(this.divideIfNotByZero(result.query2[2].hour02, result.query5[2].hour02));
+            ds3.push(this.divideIfNotByZero(result.query2[2].hour03, result.query5[2].hour03));
+            ds3.push(this.divideIfNotByZero(result.query2[2].hour04, result.query5[2].hour04));
+            ds3.push(this.divideIfNotByZero(result.query2[2].hour05, result.query5[2].hour05));
+            ds3.push(this.divideIfNotByZero(result.query2[2].hour06, result.query5[2].hour06));
+            
             ds3.push(this.divideIfNotByZero(result.query2[2].hour07, result.query5[2].hour07));
             ds3.push(this.divideIfNotByZero(result.query2[2].hour08, result.query5[2].hour08));
             ds3.push(this.divideIfNotByZero(result.query2[2].hour09, result.query5[2].hour09));
@@ -254,6 +291,12 @@ var ReportsPage = React.createClass({
             ds3.push(this.divideIfNotByZero(result.query2[2].hour17, result.query5[2].hour17));
             ds3.push(this.divideIfNotByZero(result.query2[2].hour18, result.query5[2].hour18));
             ds3.push(this.divideIfNotByZero(result.query2[2].hour19, result.query5[2].hour19));
+
+            ds3.push(this.divideIfNotByZero(result.query2[2].hour20, result.query5[2].hour20));
+            ds3.push(this.divideIfNotByZero(result.query2[2].hour21, result.query5[2].hour21));
+            ds3.push(this.divideIfNotByZero(result.query2[2].hour22, result.query5[2].hour22));
+            ds3.push(this.divideIfNotByZero(result.query2[2].hour23, result.query5[2].hour23));
+            ds3.push(this.divideIfNotByZero(result.query2[2].hour24, result.query5[2].hour24));
             datasets.push({
                 label: result.query2[2].version,
                 fillColor: "rgba(200,200,200,0.2)",
@@ -294,13 +337,21 @@ var ReportsPage = React.createClass({
         $('#myLineChartLegend').append(myLineChart.generateLegend());
     },
     createChart2: function (result) {
-        var labels = ['07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19'];
+        var labels = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'];
         var ds1 = [];
         var ds2 = [];
         var ds3 = [];
         var datasets = [];
 
         // populate datasets
+        ds1.push(this.divideIfNotByZero(result.query3[0].hour00, result.query5[0].hour00));
+        ds1.push(this.divideIfNotByZero(result.query3[0].hour01, result.query5[0].hour01));
+        ds1.push(this.divideIfNotByZero(result.query3[0].hour02, result.query5[0].hour02));
+        ds1.push(this.divideIfNotByZero(result.query3[0].hour03, result.query5[0].hour03));
+        ds1.push(this.divideIfNotByZero(result.query3[0].hour04, result.query5[0].hour04));
+        ds1.push(this.divideIfNotByZero(result.query3[0].hour05, result.query5[0].hour05));
+        ds1.push(this.divideIfNotByZero(result.query3[0].hour06, result.query5[0].hour06));
+        
         ds1.push(this.divideIfNotByZero(result.query3[0].hour07, result.query5[0].hour07));
         ds1.push(this.divideIfNotByZero(result.query3[0].hour08, result.query5[0].hour08));
         ds1.push(this.divideIfNotByZero(result.query3[0].hour09, result.query5[0].hour09));
@@ -314,6 +365,13 @@ var ReportsPage = React.createClass({
         ds1.push(this.divideIfNotByZero(result.query3[0].hour17, result.query5[0].hour17));
         ds1.push(this.divideIfNotByZero(result.query3[0].hour18, result.query5[0].hour18));
         ds1.push(this.divideIfNotByZero(result.query3[0].hour19, result.query5[0].hour19));
+
+        ds1.push(this.divideIfNotByZero(result.query3[0].hour20, result.query5[0].hour20));
+        ds1.push(this.divideIfNotByZero(result.query3[0].hour21, result.query5[0].hour21));
+        ds1.push(this.divideIfNotByZero(result.query3[0].hour22, result.query5[0].hour22));
+        ds1.push(this.divideIfNotByZero(result.query3[0].hour23, result.query5[0].hour23));
+        ds1.push(this.divideIfNotByZero(result.query3[0].hour24, result.query5[0].hour24));
+        
         datasets.push({
             label: result.query3[0].version,
             fillColor: "rgba(151,187,205,0.2)",
@@ -326,6 +384,14 @@ var ReportsPage = React.createClass({
         });
 
         if (result.query2.length > 1) {
+            ds2.push(this.divideIfNotByZero(result.query3[1].hour00, result.query5[1].hour00));
+            ds2.push(this.divideIfNotByZero(result.query3[1].hour01, result.query5[1].hour01));
+            ds2.push(this.divideIfNotByZero(result.query3[1].hour02, result.query5[1].hour02));
+            ds2.push(this.divideIfNotByZero(result.query3[1].hour03, result.query5[1].hour03));
+            ds2.push(this.divideIfNotByZero(result.query3[1].hour04, result.query5[1].hour04));
+            ds2.push(this.divideIfNotByZero(result.query3[1].hour05, result.query5[1].hour05));
+            ds2.push(this.divideIfNotByZero(result.query3[1].hour06, result.query5[1].hour06));
+            
             ds2.push(this.divideIfNotByZero(result.query3[1].hour07, result.query5[1].hour07));
             ds2.push(this.divideIfNotByZero(result.query3[1].hour08, result.query5[1].hour08));
             ds2.push(this.divideIfNotByZero(result.query3[1].hour09, result.query5[1].hour09));
@@ -339,6 +405,13 @@ var ReportsPage = React.createClass({
             ds2.push(this.divideIfNotByZero(result.query3[1].hour17, result.query5[1].hour17));
             ds2.push(this.divideIfNotByZero(result.query3[1].hour18, result.query5[1].hour18));
             ds2.push(this.divideIfNotByZero(result.query3[1].hour19, result.query5[1].hour19));
+
+            ds2.push(this.divideIfNotByZero(result.query3[1].hour20, result.query5[1].hour20));
+            ds2.push(this.divideIfNotByZero(result.query3[1].hour21, result.query5[1].hour21));
+            ds2.push(this.divideIfNotByZero(result.query3[1].hour22, result.query5[1].hour22));
+            ds2.push(this.divideIfNotByZero(result.query3[1].hour23, result.query5[1].hour23));
+            ds2.push(this.divideIfNotByZero(result.query3[1].hour24, result.query5[1].hour24));
+            
             datasets.push({
                 label: result.query3[1].version,
                 fillColor: "rgba(151,205,187,0.2)",
@@ -352,6 +425,14 @@ var ReportsPage = React.createClass({
         }
 
         if (result.query2.length > 2) {
+            ds3.push(this.divideIfNotByZero(result.query3[2].hour00, result.query5[2].hour00));
+            ds3.push(this.divideIfNotByZero(result.query3[2].hour01, result.query5[2].hour01));
+            ds3.push(this.divideIfNotByZero(result.query3[2].hour02, result.query5[2].hour02));
+            ds3.push(this.divideIfNotByZero(result.query3[2].hour03, result.query5[2].hour03));
+            ds3.push(this.divideIfNotByZero(result.query3[2].hour04, result.query5[2].hour04));
+            ds3.push(this.divideIfNotByZero(result.query3[2].hour05, result.query5[2].hour05));
+            ds3.push(this.divideIfNotByZero(result.query3[2].hour06, result.query5[2].hour06));
+            
             ds3.push(this.divideIfNotByZero(result.query3[2].hour07, result.query5[2].hour07));
             ds3.push(this.divideIfNotByZero(result.query3[2].hour08, result.query5[2].hour08));
             ds3.push(this.divideIfNotByZero(result.query3[2].hour09, result.query5[2].hour09));
@@ -365,6 +446,12 @@ var ReportsPage = React.createClass({
             ds3.push(this.divideIfNotByZero(result.query3[2].hour17, result.query5[2].hour17));
             ds3.push(this.divideIfNotByZero(result.query3[2].hour18, result.query5[2].hour18));
             ds3.push(this.divideIfNotByZero(result.query3[2].hour19, result.query5[2].hour19));
+
+            ds3.push(this.divideIfNotByZero(result.query3[2].hour20, result.query5[2].hour20));
+            ds3.push(this.divideIfNotByZero(result.query3[2].hour21, result.query5[2].hour21));
+            ds3.push(this.divideIfNotByZero(result.query3[2].hour22, result.query5[2].hour22));
+            ds3.push(this.divideIfNotByZero(result.query3[2].hour23, result.query5[2].hour23));
+            ds3.push(this.divideIfNotByZero(result.query3[2].hour24, result.query5[2].hour24));
             datasets.push({
                 label: result.query3[2].version,
                 fillColor: "rgba(200,200,200,0.2)",
@@ -405,13 +492,21 @@ var ReportsPage = React.createClass({
         $('#myLineChartLegend2').append(myLineChart.generateLegend());
     },
     createChart3: function (result) {
-        var labels = ['07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19'];
+        var labels = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'];
         var ds1 = [];
         var ds2 = [];
         var ds3 = [];
         var datasets = [];
 
         // populate datasets
+        ds1.push(this.divideIfNotByZero(result.query4[0].hour00, result.query5[0].hour00));
+        ds1.push(this.divideIfNotByZero(result.query4[0].hour01, result.query5[0].hour01));
+        ds1.push(this.divideIfNotByZero(result.query4[0].hour02, result.query5[0].hour02));
+        ds1.push(this.divideIfNotByZero(result.query4[0].hour03, result.query5[0].hour03));
+        ds1.push(this.divideIfNotByZero(result.query4[0].hour04, result.query5[0].hour04));
+        ds1.push(this.divideIfNotByZero(result.query4[0].hour05, result.query5[0].hour05));
+        ds1.push(this.divideIfNotByZero(result.query4[0].hour06, result.query5[0].hour06));
+        
         ds1.push(this.divideIfNotByZero(result.query4[0].hour07, result.query5[0].hour07));
         ds1.push(this.divideIfNotByZero(result.query4[0].hour08, result.query5[0].hour08));
         ds1.push(this.divideIfNotByZero(result.query4[0].hour09, result.query5[0].hour09));
@@ -425,6 +520,13 @@ var ReportsPage = React.createClass({
         ds1.push(this.divideIfNotByZero(result.query4[0].hour17, result.query5[0].hour17));
         ds1.push(this.divideIfNotByZero(result.query4[0].hour18, result.query5[0].hour18));
         ds1.push(this.divideIfNotByZero(result.query4[0].hour19, result.query5[0].hour19));
+
+        ds1.push(this.divideIfNotByZero(result.query4[0].hour20, result.query5[0].hour20));
+        ds1.push(this.divideIfNotByZero(result.query4[0].hour21, result.query5[0].hour21));
+        ds1.push(this.divideIfNotByZero(result.query4[0].hour22, result.query5[0].hour22));
+        ds1.push(this.divideIfNotByZero(result.query4[0].hour23, result.query5[0].hour23));
+        ds1.push(this.divideIfNotByZero(result.query4[0].hour24, result.query5[0].hour24));
+        
         datasets.push({
             label: result.query4[0].version,
             fillColor: "rgba(151,187,205,0.2)",
@@ -437,6 +539,14 @@ var ReportsPage = React.createClass({
         });
 
         if (result.query2.length > 1) {
+            ds2.push(this.divideIfNotByZero(result.query4[1].hour00, result.query5[1].hour00));
+            ds2.push(this.divideIfNotByZero(result.query4[1].hour01, result.query5[1].hour01));
+            ds2.push(this.divideIfNotByZero(result.query4[1].hour02, result.query5[1].hour02));
+            ds2.push(this.divideIfNotByZero(result.query4[1].hour03, result.query5[1].hour03));
+            ds2.push(this.divideIfNotByZero(result.query4[1].hour04, result.query5[1].hour04));
+            ds2.push(this.divideIfNotByZero(result.query4[1].hour05, result.query5[1].hour05));
+            ds2.push(this.divideIfNotByZero(result.query4[1].hour06, result.query5[1].hour06));
+            
             ds2.push(this.divideIfNotByZero(result.query4[1].hour07, result.query5[1].hour07));
             ds2.push(this.divideIfNotByZero(result.query4[1].hour08, result.query5[1].hour08));
             ds2.push(this.divideIfNotByZero(result.query4[1].hour09, result.query5[1].hour09));
@@ -450,6 +560,13 @@ var ReportsPage = React.createClass({
             ds2.push(this.divideIfNotByZero(result.query4[1].hour17, result.query5[1].hour17));
             ds2.push(this.divideIfNotByZero(result.query4[1].hour18, result.query5[1].hour18));
             ds2.push(this.divideIfNotByZero(result.query4[1].hour19, result.query5[1].hour19));
+            
+            ds2.push(this.divideIfNotByZero(result.query4[1].hour20, result.query5[1].hour20));
+            ds2.push(this.divideIfNotByZero(result.query4[1].hour21, result.query5[1].hour21));
+            ds2.push(this.divideIfNotByZero(result.query4[1].hour22, result.query5[1].hour22));
+            ds2.push(this.divideIfNotByZero(result.query4[1].hour23, result.query5[1].hour23));
+            ds2.push(this.divideIfNotByZero(result.query4[1].hour24, result.query5[1].hour24));
+            
             datasets.push({
                 label: result.query4[1].version,
                 fillColor: "rgba(151,205,187,0.2)",
@@ -462,6 +579,14 @@ var ReportsPage = React.createClass({
             });
         }
         if (result.query2.length > 2) {
+            ds3.push(this.divideIfNotByZero(result.query4[2].hour00, result.query5[2].hour00));
+            ds3.push(this.divideIfNotByZero(result.query4[2].hour01, result.query5[2].hour01));
+            ds3.push(this.divideIfNotByZero(result.query4[2].hour02, result.query5[2].hour02));
+            ds3.push(this.divideIfNotByZero(result.query4[2].hour03, result.query5[2].hour03));
+            ds3.push(this.divideIfNotByZero(result.query4[2].hour04, result.query5[2].hour04));
+            ds3.push(this.divideIfNotByZero(result.query4[2].hour05, result.query5[2].hour05));
+            ds3.push(this.divideIfNotByZero(result.query4[2].hour06, result.query5[2].hour06));
+            
             ds3.push(this.divideIfNotByZero(result.query4[2].hour07, result.query5[2].hour07));
             ds3.push(this.divideIfNotByZero(result.query4[2].hour08, result.query5[2].hour08));
             ds3.push(this.divideIfNotByZero(result.query4[2].hour09, result.query5[2].hour09));
@@ -475,6 +600,12 @@ var ReportsPage = React.createClass({
             ds3.push(this.divideIfNotByZero(result.query4[2].hour17, result.query5[2].hour17));
             ds3.push(this.divideIfNotByZero(result.query4[2].hour18, result.query5[2].hour18));
             ds3.push(this.divideIfNotByZero(result.query4[2].hour19, result.query5[2].hour19));
+
+            ds3.push(this.divideIfNotByZero(result.query4[2].hour20, result.query5[2].hour20));
+            ds3.push(this.divideIfNotByZero(result.query4[2].hour21, result.query5[2].hour21));
+            ds3.push(this.divideIfNotByZero(result.query4[2].hour22, result.query5[2].hour22));
+            ds3.push(this.divideIfNotByZero(result.query4[2].hour23, result.query5[2].hour23));
+            ds3.push(this.divideIfNotByZero(result.query4[2].hour24, result.query5[2].hour24));
             datasets.push({
                 label: result.query4[2].version,
                 fillColor: "rgba(200,200,200,0.2)",

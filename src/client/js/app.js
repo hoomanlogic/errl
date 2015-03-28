@@ -12,7 +12,7 @@ var app = app || {};
         key: '54263eb4-6ced-49bf-9bd7-14f0106c2a02',
         product: 'Errl',
         environment: null,
-        version: '1.0.0',
+        version: '1.0.2',
         getState: null,
         getUser: function () {
             return 'geoffrey.floyd';

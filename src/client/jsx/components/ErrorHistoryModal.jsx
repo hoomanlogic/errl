@@ -32,7 +32,7 @@ var ErrorHistoryModal = React.createClass({
                             { field: 'state', display: 'State', onRender: this.renderJsonTree},
                             { field: 'details', display: 'Details', onRender: this.renderJsonTree},
                             { field: 'userId', display: 'User'},
-                            { field: 'occurred', display: 'Occurred', justify: 'right'} 
+                            { field: 'occurred', display: 'Occurred', justify: 'right', onRender: this.renderDate} 
                         ]} />
                 </div>
             </Modal>
@@ -59,6 +59,13 @@ var ErrorHistoryModal = React.createClass({
     },
     renderJsonTree: function (data, field, index) {
         return data[field].split(',').map(function (item, i) {
+            return (
+                <div>{item}</div>  
+            );
+        });
+    },
+    renderDate: function (data, field, index) {
+        return data[field].split('T').map(function (item, i) {
             return (
                 <div>{item}</div>  
             );
