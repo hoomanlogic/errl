@@ -565,6 +565,7 @@ var StatusPage = React.createClass({
     },
     pollNeedsRefresh: function () {
         $.ajax({
+            context: this,
             type: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + app.getAccessToken()

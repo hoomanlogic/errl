@@ -599,7 +599,7 @@ var ReportsPage = React.createClass({displayName: "ReportsPage",
                 React.createElement("div", {id: "criteria", className: "expanded"}, 
                     React.createElement("form", {className: "form-horizontal", role: "form"}, 
                         React.createElement("div", {className: "form-group"}, 
-                            React.createElement("label", {for: "selectReport", className: "col-sm-4 control-label"}, "Product"), 
+                            React.createElement("label", {for: "selectReport", className: "col-sm-4 control-label"}, "Report"), 
                             React.createElement("div", {className: "col-sm-8"}, 
                                 React.createElement("select", {id: "selectReport", className: "form-control", value: this.state.criteria_report, onChange: this.handleCriteriaChange}, 
                                     reports
@@ -1788,6 +1788,7 @@ var StatusPage = React.createClass({displayName: "StatusPage",
     },
     pollNeedsRefresh: function () {
         $.ajax({
+            context: this,
             type: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + app.getAccessToken()

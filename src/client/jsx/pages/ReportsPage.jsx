@@ -84,7 +84,7 @@ var ReportsPage = React.createClass({
                 <div id="criteria" className="expanded">
                     <form className="form-horizontal" role="form">
                         <div className="form-group">
-                            <label for="selectReport" className="col-sm-4 control-label">Product</label>
+                            <label for="selectReport" className="col-sm-4 control-label">Report</label>
                             <div className="col-sm-8">
                                 <select id="selectReport" className="form-control" value={this.state.criteria_report} onChange={this.handleCriteriaChange}>
                                     {reports}
