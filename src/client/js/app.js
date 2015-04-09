@@ -7,19 +7,17 @@ var app = app || {};
     ns.HOST_NAME = window.location.href.split('/').slice(0, 3).join('/');
     
     // configure error logger
-    errl.config = {
-        developer: 'hoomanlogic',
-        key: '54263eb4-6ced-49bf-9bd7-14f0106c2a02',
-        product: 'Errl',
-        environment: null,
-        version: '1.0.2',
-        getState: null,
-        getUser: function () {
-            return 'geoffrey.floyd';
-        },
-        onLogged: function (err) {
-            toastr.error("<p><string>Oops!</strong></p><p>We're really sorry about that.</p><p>We'll get this fixed as soon as possible.</p>" + '<a class="btn btn-default btn-link" target="_blank" href="' + errl.getErrorDetailUrl(err.errorId) + '">Show me details</a> ');
-        }
+    errl.config = errl.config || {};
+    errl.config.developer = 'hoomanlogic';
+    errl.config.key = '54263eb4-6ced-49bf-9bd7-14f0106c2a02';
+    errl.config.product = 'Errl';
+    errl.config.environment = null;
+    errl.config.getState = null;
+    errl.config.getUser = function () {
+        return 'geoffrey.floyd';
+    };
+    errl.config.onLogged = function (err) {
+        toastr.error("<p><string>Oops!</strong></p><p>We're really sorry about that.</p><p>We'll get this fixed as soon as possible.</p>" + '<a class="btn btn-default btn-link" target="_blank" href="' + errl.getErrorDetailUrl(err.errorId) + '">Show me details</a> ');
     };
 
     // Data access operations
