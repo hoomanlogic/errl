@@ -95,7 +95,7 @@ var StatusPage = React.createClass({
                         { field: 'objectName', display: 'Object', onCellClick: this.openErrorHistory},
                         { field: 'subName', display: 'Sub', onCellClick: this.openErrorHistory},
                         { field: 'timesOccurred', display: '# Errors'},
-                        { field: 'latestOccurrence', display: 'Latest'},
+                        { field: 'latestOccurrence', display: 'Latest', justify: 'right', onRender: this.renderDate},
                         { field: 'usersAffected', display: 'Users Affected'}
                     ]} />
                 </div>
@@ -155,6 +155,24 @@ var StatusPage = React.createClass({
                 <ErrorHistoryModal ref="errorHistoryModal" />
             </div>
         );
+    },
+    renderDate: function (data, field, index) {
+        var localize = (new Date(data[field])).toLocaleDateString() + ' ' + (new Date(data[field])).toTimeString().split(' ')[0];
+        return localize.split(' ').map(function (item, i) {
+            return (
+                <div>{item}</div>  
+            );
+        });
+    },
+    localizeLabel: function (label) {
+        var utcDate = new Date(label + ':00 GMT-0000');
+        label = utcDate.toLocaleDateString() + ' ' + (utcDate.getHours() < 10 ? '0' + utcDate.getHours() : utcDate.getHours());
+        return label;
+    },
+    globalizeLabel: function (label) {
+        var utcDate = new Date(label + ':00');
+        label = utcDate.toLocaleDateString() + ' ' + (utcDate.getUTCHours() < 10 ? '0' + utcDate.getUTCHours() : utcDate.getUTCHours());
+        return label;
     },
     openErrorHistory: function (field, row) {
         if (field === 'errorType') {
@@ -222,8 +240,6 @@ var StatusPage = React.createClass({
                 '&date='
         }).done(function (result) {
             
-            
-            
             // build from and to option lists
             var fromOptions = [];
             var toOptions = [];
@@ -241,24 +257,26 @@ var StatusPage = React.createClass({
                 for (var i = 0; i < result.timesOccurred.length; i++) {
 
                     if (i === defaultStart) {
-                        selectedFrom = { value: i, label: result.timesOccurred[i].key };
+                        selectedFrom = { value: i, label: this.localizeLabel(result.timesOccurred[i].key) };
                     }
                     
                     if (i === 0) {
-                        fromOptions.push({ value: i, label: result.timesOccurred[i].key });
+                        fromOptions.push({ value: i, label: this.localizeLabel(result.timesOccurred[i].key) });
                     } else if (i === result.timesOccurred.length - 1) {
-                        selectedTo = { value: i, label: result.timesOccurred[i].key };
+                        selectedTo = { value: i, label: this.localizeLabel(result.timesOccurred[i].key) };
                         toOptions.push(selectedTo);
                     } else {
-                        fromOptions.push({ value: i, label: result.timesOccurred[i].key });
-                        toOptions.push({ value: i, label: result.timesOccurred[i].key });
+                        fromOptions.push({ value: i, label: this.localizeLabel(result.timesOccurred[i].key) });
+                        toOptions.push({ value: i, label: this.localizeLabel(result.timesOccurred[i].key) });
                     }
                 }
             }
             
             if (toOptions.length === 0) {
-                var date = selectedFrom.label.split(" ")[0].replace('/', '-').replace('/', '-');
-                var hour = selectedFrom.label.split(" ")[1];
+                var globalLabel = this.globalizeLabel(selectedFrom.label);
+                
+                var date = globalLabel.split(' ')[0].replace('/', '-').replace('/', '-');
+                var hour = globalLabel.split(' ')[1];
 
                 this.getErrorSummary(this.state.criteria_product, this.state.criteria_environment, this.state.criteria_version, date, hour);
             } else {
@@ -288,7 +306,7 @@ var StatusPage = React.createClass({
         
         // populate datasets for selected label range
         for (var i = parseInt(this.state.criteria_from) ; i <= parseInt(this.state.criteria_to) ; i++) {
-            labels.push(data.timesOccurred[i].key);
+            labels.push(this.localizeLabel(data.timesOccurred[i].key));
             ds1.push(data.timesOccurred[i].value);
             ds2.push(data.procsAffected[i].value);
             ds3.push(data.usersAffected[i].value);
@@ -537,8 +555,10 @@ var StatusPage = React.createClass({
         }
 
         // remember which values were clicked for later polling
-        this.lastDateClicked = activePoints[0].label.split(" ")[0].replace('/', '-').replace('/', '-');
-        this.lastHourClicked = activePoints[0].label.split(" ")[1];
+        var globalLabel = this.globalizeLabel(activePoints[0].label);
+                
+        this.lastDateClicked = globalLabel.split(' ')[0].replace('/', '-').replace('/', '-');
+        this.lastHourClicked =  globalLabel.split(' ')[1];
 
         // get error details
         this.getErrorSummary(this.state.criteria_product, this.state.criteria_environment, this.state.criteria_version, this.lastDateClicked, this.lastHourClicked);

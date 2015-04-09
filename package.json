@@ -1,7 +1,7 @@
 {
-  "name": "errl",
-  "version": "1.0.0",
-  "description": "",
+  "name": "Errl",
+  "version": "1.1.0",
+  "description": "Error Reporting Client and API",
   "main": "gulpfile.js",
   "directories": {
     "doc": "doc"

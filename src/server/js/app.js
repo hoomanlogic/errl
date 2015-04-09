@@ -70,6 +70,9 @@ window.onmousemove = function (event) {
         app.hideCriteria();
     }
 };
+/* 
+ * ContentEditable
+ */
 var ContentEditable = React.createClass({displayName: "ContentEditable",
     render: function () {
         return React.createElement("div", {
@@ -95,6 +98,11 @@ var ContentEditable = React.createClass({displayName: "ContentEditable",
         this.lastHtml = html;    
     }
 });
+/* 
+ * DataTable
+ * ClassNames: text-[left,right,center] table table-striped fa fa-sort-asc fa-sort-desc
+ * Dependencies: jQuery, Bootstrap(CSS), FontAwesome
+ */
 var DataTable = React.createClass({displayName: "DataTable",
     getInitialState: function () {
         return { 
@@ -188,8 +196,6 @@ var DataTable = React.createClass({displayName: "DataTable",
             }; 
         }
 
-        
-        
         return (
             React.createElement("table", {className: "table table-striped"}, 
                 React.createElement("thead", null, 
@@ -216,7 +222,8 @@ var DataTable = React.createClass({displayName: "DataTable",
         this.setState({ sortBy: sortBy, sortAsc: sortAsc });
     }
 });
-/* DropdownMenu
+/* 
+ * DropdownMenu
  * ClassNames: dropdown, dropdown-[default,primary,success,info,warning,danger], dropdown-menu, open
  * Dependencies: jQuery, Bootstrap(CSS)
  */
@@ -277,6 +284,11 @@ var DropdownMenu = React.createClass({displayName: "DropdownMenu",
         $win.on("click.Bst", handler);
     }
 });
+/* 
+ * Modal
+ * ClassNames: modal modal-dialog modal-content modal-body modal-header modal-footer fade in scroll close
+ * Dependencies: jQuery, Bootstrap(CSS)
+ */
 var Modal = React.createClass({displayName: "Modal",
     getBuffer: function () {
         var buffer = $( ".modal-dialog").offset().top * 2;
@@ -353,7 +365,8 @@ var Modal = React.createClass({displayName: "Modal",
         $( ".modal-body" ).css('height', ($( window ).innerHeight() - this.getBuffer()) + 'px');
     }
 });
-/* Panel
+/* 
+ * Panel
  * ClassNames: panel, panel-[default,primary,success,info,warning,danger], panel-collapse, in, collapse, collapsing, clickable, panel-title, overflow
  * Dependencies: jQuery, Bootstrap(CSS)
  * Props: children :: an array of keyed li elements
@@ -495,7 +508,8 @@ var ErrorHistoryModal = React.createClass({displayName: "ErrorHistoryModal",
         });
     },
     renderDate: function (data, field, index) {
-        return data[field].split('T').map(function (item, i) {
+        var localize = (new Date(data[field])).toLocaleDateString() + ' ' + (new Date(data[field])).toTimeString().split(' ')[0];
+        return localize.split(' ').map(function (item, i) {
             return (
                 React.createElement("div", null, item)  
             );
@@ -1318,7 +1332,7 @@ var StatusPage = React.createClass({displayName: "StatusPage",
                         { field: 'objectName', display: 'Object', onCellClick: this.openErrorHistory},
                         { field: 'subName', display: 'Sub', onCellClick: this.openErrorHistory},
                         { field: 'timesOccurred', display: '# Errors'},
-                        { field: 'latestOccurrence', display: 'Latest'},
+                        { field: 'latestOccurrence', display: 'Latest', justify: 'right', onRender: this.renderDate},
                         { field: 'usersAffected', display: 'Users Affected'}
                     ]})
                 )
@@ -1378,6 +1392,24 @@ var StatusPage = React.createClass({displayName: "StatusPage",
                 React.createElement(ErrorHistoryModal, {ref: "errorHistoryModal"})
             )
         );
+    },
+    renderDate: function (data, field, index) {
+        var localize = (new Date(data[field])).toLocaleDateString() + ' ' + (new Date(data[field])).toTimeString().split(' ')[0];
+        return localize.split(' ').map(function (item, i) {
+            return (
+                React.createElement("div", null, item)  
+            );
+        });
+    },
+    localizeLabel: function (label) {
+        var utcDate = new Date(label + ':00 GMT-0000');
+        label = utcDate.toLocaleDateString() + ' ' + (utcDate.getHours() < 10 ? '0' + utcDate.getHours() : utcDate.getHours());
+        return label;
+    },
+    globalizeLabel: function (label) {
+        var utcDate = new Date(label + ':00');
+        label = utcDate.toLocaleDateString() + ' ' + (utcDate.getUTCHours() < 10 ? '0' + utcDate.getUTCHours() : utcDate.getUTCHours());
+        return label;
     },
     openErrorHistory: function (field, row) {
         if (field === 'errorType') {
@@ -1445,8 +1477,6 @@ var StatusPage = React.createClass({displayName: "StatusPage",
                 '&date='
         }).done(function (result) {
             
-            
-            
             // build from and to option lists
             var fromOptions = [];
             var toOptions = [];
@@ -1464,24 +1494,26 @@ var StatusPage = React.createClass({displayName: "StatusPage",
                 for (var i = 0; i < result.timesOccurred.length; i++) {
 
                     if (i === defaultStart) {
-                        selectedFrom = { value: i, label: result.timesOccurred[i].key };
+                        selectedFrom = { value: i, label: this.localizeLabel(result.timesOccurred[i].key) };
                     }
                     
                     if (i === 0) {
-                        fromOptions.push({ value: i, label: result.timesOccurred[i].key });
+                        fromOptions.push({ value: i, label: this.localizeLabel(result.timesOccurred[i].key) });
                     } else if (i === result.timesOccurred.length - 1) {
-                        selectedTo = { value: i, label: result.timesOccurred[i].key };
+                        selectedTo = { value: i, label: this.localizeLabel(result.timesOccurred[i].key) };
                         toOptions.push(selectedTo);
                     } else {
-                        fromOptions.push({ value: i, label: result.timesOccurred[i].key });
-                        toOptions.push({ value: i, label: result.timesOccurred[i].key });
+                        fromOptions.push({ value: i, label: this.localizeLabel(result.timesOccurred[i].key) });
+                        toOptions.push({ value: i, label: this.localizeLabel(result.timesOccurred[i].key) });
                     }
                 }
             }
             
             if (toOptions.length === 0) {
-                var date = selectedFrom.label.split(" ")[0].replace('/', '-').replace('/', '-');
-                var hour = selectedFrom.label.split(" ")[1];
+                var globalLabel = this.globalizeLabel(selectedFrom.label);
+                
+                var date = globalLabel.split(' ')[0].replace('/', '-').replace('/', '-');
+                var hour = globalLabel.split(' ')[1];
 
                 this.getErrorSummary(this.state.criteria_product, this.state.criteria_environment, this.state.criteria_version, date, hour);
             } else {
@@ -1511,7 +1543,7 @@ var StatusPage = React.createClass({displayName: "StatusPage",
         
         // populate datasets for selected label range
         for (var i = parseInt(this.state.criteria_from) ; i <= parseInt(this.state.criteria_to) ; i++) {
-            labels.push(data.timesOccurred[i].key);
+            labels.push(this.localizeLabel(data.timesOccurred[i].key));
             ds1.push(data.timesOccurred[i].value);
             ds2.push(data.procsAffected[i].value);
             ds3.push(data.usersAffected[i].value);
@@ -1760,8 +1792,10 @@ var StatusPage = React.createClass({displayName: "StatusPage",
         }
 
         // remember which values were clicked for later polling
-        this.lastDateClicked = activePoints[0].label.split(" ")[0].replace('/', '-').replace('/', '-');
-        this.lastHourClicked = activePoints[0].label.split(" ")[1];
+        var globalLabel = this.globalizeLabel(activePoints[0].label);
+                
+        this.lastDateClicked = globalLabel.split(' ')[0].replace('/', '-').replace('/', '-');
+        this.lastHourClicked =  globalLabel.split(' ')[1];
 
         // get error details
         this.getErrorSummary(this.state.criteria_product, this.state.criteria_environment, this.state.criteria_version, this.lastDateClicked, this.lastHourClicked);

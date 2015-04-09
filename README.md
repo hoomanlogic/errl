@@ -1,5 +1,7 @@
 # Errl
 
+Error Reporting Client and API
+
 ### Getting Started
 
 To get all the required packages, first open ```.\src\METS.sln``` and restore NuGet packages, then run the following commands in the root folder:

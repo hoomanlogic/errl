@@ -65,7 +65,8 @@ var ErrorHistoryModal = React.createClass({
         });
     },
     renderDate: function (data, field, index) {
-        return data[field].split('T').map(function (item, i) {
+        var localize = (new Date(data[field])).toLocaleDateString() + ' ' + (new Date(data[field])).toTimeString().split(' ')[0];
+        return localize.split(' ').map(function (item, i) {
             return (
                 <div>{item}</div>  
             );

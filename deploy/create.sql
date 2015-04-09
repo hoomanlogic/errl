@@ -26,6 +26,7 @@ go
 
 -- create my developer account
 insert into [errl].developers values ('54263eb4-6ced-49bf-9bd7-14f0106c2a02','54263eb4-6ced-49bf-9bd7-14f0106c2a02','hoomanlogic','HoomanLogic', 1)
+select * from errl.developers
 
 --create table [errl].[DeveloperProducts] (
 --	[Id] nvarchar(128) not null constraint [PK_DeveloperProducts] primary key,
@@ -54,6 +55,8 @@ go
 
 -- assign me to my developer account
 insert into [errl].UsersDevelopers values ('db6f45f8-0c0e-4135-9a29-0be2c79a4eb1', '54263eb4-6ced-49bf-9bd7-14f0106c2a02', 1)
+-- Jason's account
+insert into [errl].UsersDevelopers values ('cc3c9992-c766-48af-9068-a8d6b52cdff2', '54263eb4-6ced-49bf-9bd7-14f0106c2a02', 1)
 
 -- error logging
 create table [errl].[Errors] (
