@@ -1,4 +1,4 @@
-﻿var gulp = require('gulp');
+var gulp = require('gulp');
 var react = require('gulp-react');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
@@ -36,7 +36,6 @@ var jsApp = [
 ];
 
 var lessPaths = [
-    'src/client/less/definitions/**',
     'src/client/less/*.less'
 ];
 

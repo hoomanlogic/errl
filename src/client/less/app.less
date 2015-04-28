@@ -1,3 +1,4 @@
+@import '/definitions/boilerstrapalize.less';
 @import '/definitions/mixins.less';
 @import '/definitions/colors.less';
     
@@ -348,4 +349,19 @@ footer.status-bar span.pull-left {
 
 footer.status-bar span.pull-right {
   height: 15px;
+}
+
+.text-summary {
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    white-space: nowrap; 
+}
+
+.text-summary * {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.text-summary *:not(:first-child) {
+    display: none;
 }

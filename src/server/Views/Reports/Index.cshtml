@@ -1,6 +1,12 @@
 ﻿<div id="reports-page"></div>
 @Html.Partial("_SessionPartial")
 @section scripts {
+    <script src="~/js/libs.min.js?@ViewBag.Version"></script>
+    <script>
+        errl.config = errl.config || {};
+        errl.config.version = '@ViewBag.Version';
+    </script>
+    <script src="~/js/app.js?@ViewBag.Version"></script>
     <script type="text/javascript">
         $().ready(function () {
             $('#navReports').toggleClass('active');

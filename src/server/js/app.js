@@ -89,6 +89,7 @@ var ContentEditable = React.createClass({displayName: "ContentEditable",
         if (this.props.onChange && html !== this.lastHtml) {
             this.props.onChange({
                 target: {
+                    id: this.props.id || null,
                     value: html
                 }
             });
@@ -175,9 +176,11 @@ var DataTable = React.createClass({displayName: "DataTable",
                             React.createElement("span", {"data-toggle": "tooltip", "data-placement": "bottom", title: data[j][colDefs[i].field]}, text)
                         );
                     }
+                    
+                    // old: overflowWrap: 'break-word'
 
                     var domBodyColumn = (
-                        React.createElement("td", {className: 'text-' + (colDefs[i].justify || 'left'), style: { overflowWrap: 'break-word', maxWidth: colDefs[i].maxWidth || this.props.maxColWidth}}, 
+                        React.createElement("td", {onClick: this.handleCellContentClick.bind(null, colDefs[i]), className: 'text-summary text-' + (colDefs[i].justify || 'left'), style: { maxWidth: (colDefs[i].maxWidth || this.props.maxColWidth)}}, 
                             cellContent
                         )
                     );
@@ -206,6 +209,26 @@ var DataTable = React.createClass({displayName: "DataTable",
                 )
             )
         );
+    },
+    handleCellContentClick: function (colDef, e) {
+        // get the parent td element
+        var node = e.target;
+        while (String(node) !== '[object HTMLTableCellElement]' && node.parentNode) {
+            node = node.parentNode;
+        }
+        if (String(node) !== '[object HTMLTableCellElement]') {
+            return;
+        }
+        
+        var classNames = node.className.split(' ');
+        var index = classNames.indexOf('text-summary');
+        
+        if (index > -1) {
+            classNames.splice(index, 1);
+        } else {
+            classNames.push('text-summary');
+        }
+        node.className = classNames.join(' ');
     },
     sort: function (field) {
         var sortBy = this.state.sortBy;
@@ -249,7 +272,7 @@ var DropdownMenu = React.createClass({displayName: "DropdownMenu",
             return (
                 React.createElement("div", {ref: "dropdown", className: 'dropdown' + className, onClick: this.toggle}, 
                     React.createElement("a", {href: "#", "data-toggle": "dropdown", className: "dropdown-toggle", style: style}, buttonContent), 
-                    React.createElement("ul", {className: "dropdown-menu"}, 
+                    React.createElement("ul", {className: "dropdown-menu", style: this.props.dropDownMenuStyle}, 
                       menuItems
                     )
                 )
@@ -258,7 +281,7 @@ var DropdownMenu = React.createClass({displayName: "DropdownMenu",
             return (
                 React.createElement("li", {ref: "dropdown", className: 'dropdown' + className, onClick: this.toggle}, 
                     React.createElement("a", {href: "#", "data-toggle": "dropdown", className: "dropdown-toggle", style: style}, buttonContent), 
-                    React.createElement("ul", {className: "dropdown-menu"}, 
+                    React.createElement("ul", {className: "dropdown-menu", style: this.props.dropDownMenuStyle}, 
                       menuItems
                     )
                 )

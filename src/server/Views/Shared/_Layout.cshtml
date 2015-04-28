@@ -82,16 +82,9 @@ else
         @RenderBody()
     </div>
 }
-    
     <div class="status-bar">
         <small><span class="pull-left">&copy; @DateTime.Now.Year HoomanLogic</span></small>
     </div>
-    <script src="~/js/libs.min.js?@ViewBag.Version"></script>
-    <script>
-        errl.config = errl.config || {};
-        errl.config.version = '@ViewBag.Version';
-    </script>
-    <script src="~/js/app.js?@ViewBag.Version"></script>
 
     @RenderSection("scripts", required: false)
 </body>

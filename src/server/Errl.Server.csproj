@@ -319,12 +319,6 @@
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
-    <Content Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
     <Content Include="Views\Status\_SessionPartial.cshtml" />
     <Content Include="Views\ErrorDetail\Index.cshtml" />
     <Content Include="Views\Reports\Index.cshtml" />
@@ -347,6 +341,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Reports\_SessionPartial.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="js\toastr.js.map" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
