@@ -64,10 +64,12 @@ var StatusPage = React.createClass({
             
         var hourlySummary = null;
         if (hourlySummaryResult && this.state.toOptions && this.state.toOptions.length > 0) {
+            
+
+            
             hourlySummary = (
                 <div>
-                    <h3 id="headingHourly">Hourly Summary</h3>
-                    <hr />
+                    <Heading title="Hourly Summary"/>
                     <div id="myLineChartContainer">
                         <canvas id="myLineChart" width="970" height="400"></canvas>
                     </div>
@@ -82,8 +84,7 @@ var StatusPage = React.createClass({
         if (errorSummaryResult) {
             errorSummary = (
                 <div id="errorSummarySection">
-                    <h3>Error Summary</h3>
-                    <hr />
+                    <Heading title="Error Summary"/>
                     <div id="myPieChartContainer">
                         <canvas id="myPieChart" width="600" height="300"></canvas>
                     </div>

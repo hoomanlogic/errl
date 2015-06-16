@@ -72,18 +72,8 @@ window.onmousemove = function (event) {
  * ContentEditable
  */
 var ContentEditable = React.createClass({displayName: "ContentEditable",
-    render: function () {
-        return React.createElement("div", {
-            style: {display: 'inline'}, 
-            onInput: this.emitChange, 
-            onBlur: this.emitChange, 
-            contentEditable: true, 
-            dangerouslySetInnerHTML: {__html: this.props.html}});    
-    },
-    shouldComponentUpdate: function(nextProps){
-        //return nextProps.html !== this.getDOMNode().innerHTML;
-        return nextProps.html !== this.props.html;
-    },
+	mixins: [React.addons.PureRenderMixin],
+	
     emitChange: function () {
         var html = this.getDOMNode().innerHTML;
         if (this.props.onChange && html !== this.lastHtml) {
@@ -95,6 +85,15 @@ var ContentEditable = React.createClass({displayName: "ContentEditable",
             });
         }
         this.lastHtml = html;    
+    },
+	
+    render: function () {
+        return React.createElement("div", {
+            style: Object.assign({display: 'inline'}, this.props.style), 
+            onInput: this.emitChange, 
+            onBlur: this.emitChange, 
+            contentEditable: true, 
+            dangerouslySetInnerHTML: {__html: this.props.html}});    
     }
 });
 /* 
@@ -103,20 +102,64 @@ var ContentEditable = React.createClass({displayName: "ContentEditable",
  * Dependencies: jQuery, Bootstrap(CSS), FontAwesome
  */
 var DataTable = React.createClass({displayName: "DataTable",
+    /***********************************
+     * COMPONENT LIFECYCLE
+     ***********************************/
+    getDefaultProps: function () {
+        return {
+            maxColWidth: '30vw'  
+        };
+    },
     getInitialState: function () {
         return { 
             sortBy: (this.props.sortBy || this.props.columnDefinitions[0].field), 
             sortAsc: (this.props.sortAsc !== void 0 ? this.props.sortAsc : true)
         };
     },
-    getDefaultProps: function () {
-        return {
-            maxColWidth: '30vw'  
-        };
-    },
+
     componentDidUpdate: function () {
         $('[data-toggle="tooltip"]').tooltip();
     },
+    
+    /***********************************
+     * EVENT HANDLING
+     ***********************************/
+    handleCellContentClick: function (colDef, e) {
+        // get the parent td element
+        var node = e.target;
+        while (String(node) !== '[object HTMLTableCellElement]' && node.parentNode) {
+            node = node.parentNode;
+        }
+        if (String(node) !== '[object HTMLTableCellElement]') {
+            return;
+        }
+        
+        var classNames = node.className.split(' ');
+        var index = classNames.indexOf('text-summary');
+        
+        if (index > -1) {
+            classNames.splice(index, 1);
+        } else {
+            classNames.push('text-summary');
+        }
+        node.className = classNames.join(' ');
+    },
+    handleSortClick: function (field) {
+        var sortBy = this.state.sortBy;
+        var sortAsc = this.state.sortAsc;
+        if (field === sortBy) {
+            sortAsc = !sortAsc;
+        } else {
+            sortBy = field;
+            sortAsc = true;
+        }
+        
+        this.setState({ sortBy: sortBy, sortAsc: sortAsc });
+    },
+    
+    /***********************************
+     * RENDERING
+     ***********************************/
     render: function () {
         // states
         var sortBy = this.state.sortBy;
@@ -124,7 +167,7 @@ var DataTable = React.createClass({displayName: "DataTable",
         
         // props
         var colDefs = this.props.columnDefinitions;
-        var data = _.sortBy(this.props.data, function(item){ return item[sortBy]; });
+        var data = _.sortBy(this.props.data, function(item){ return item[sortBy] === null ? '' : item[sortBy]; });
         if (sortAsc !== true) {
             data.reverse();
         }
@@ -141,7 +184,7 @@ var DataTable = React.createClass({displayName: "DataTable",
         
             var domHeadColumn = (
                 React.createElement("th", {className: 'text-' + (colDefs[i].justify || 'left')}, 
-                    React.createElement("a", {href: "javascript:;", onClick: this.sort.bind(null, colDefs[i].field)}, 
+                    React.createElement("a", {href: "javascript:;", onClick: this.handleSortClick.bind(null, colDefs[i].field)}, 
                         colDefs[i].display, " ", React.createElement("i", {className: sortBy === colDefs[i].field ? (sortAsc ? 'fa fa-sort-asc' : 'fa fa-sort-desc') : ''})
                     )
                 )
@@ -198,7 +241,7 @@ var DataTable = React.createClass({displayName: "DataTable",
         }
 
         return (
-            React.createElement("table", {className: "table table-striped"}, 
+            React.createElement("table", {style: this.props.style || {}, className: "table table-striped"}, 
                 React.createElement("thead", null, 
                     React.createElement("tr", null, 
                         domHeadColumns
@@ -210,38 +253,6 @@ var DataTable = React.createClass({displayName: "DataTable",
             )
         );
     },
-    handleCellContentClick: function (colDef, e) {
-        // get the parent td element
-        var node = e.target;
-        while (String(node) !== '[object HTMLTableCellElement]' && node.parentNode) {
-            node = node.parentNode;
-        }
-        if (String(node) !== '[object HTMLTableCellElement]') {
-            return;
-        }
-        
-        var classNames = node.className.split(' ');
-        var index = classNames.indexOf('text-summary');
-        
-        if (index > -1) {
-            classNames.splice(index, 1);
-        } else {
-            classNames.push('text-summary');
-        }
-        node.className = classNames.join(' ');
-    },
-    sort: function (field) {
-        var sortBy = this.state.sortBy;
-        var sortAsc = this.state.sortAsc;
-        if (field === sortBy) {
-            sortAsc = !sortAsc;
-        } else {
-            sortBy = field;
-            sortAsc = true;
-        }
-        
-        this.setState({ sortBy: sortBy, sortAsc: sortAsc });
-    }
 });
 /* 
  * DropdownMenu
@@ -548,6 +559,24 @@ var ErrorHistoryModal = React.createClass({displayName: "ErrorHistoryModal",
         this.refs.modal.show();
     }
 });
+var Heading = React.createClass({displayName: "Heading",
+    render: function () {
+        
+        var headingStyle = { 
+            marginBottom: '0',
+            backgroundColor: 'rgb(37,37,37)', //@clrBackgroundH
+            borderRadius: '8px 8px 0 0', 
+            padding: '1px 0 0 5px'
+        };
+
+        return (
+            React.createElement("div", null, 
+                React.createElement("h3", {style: headingStyle}, this.props.title), 
+                React.createElement("hr", null)
+            )
+        );
+    }
+});
 var ReportsPage = React.createClass({displayName: "ReportsPage",
     getInitialState: function () {
         return {
@@ -593,8 +622,7 @@ var ReportsPage = React.createClass({displayName: "ReportsPage",
         if (reportData) {
             reportDOM.push(
                 React.createElement("div", null, 
-                    React.createElement("h3", {id: "headingChart"}, "Version Comparison Error Occurrences"), 
-                    React.createElement("hr", null), 
+                    React.createElement(Heading, {title: "Version Comparison Error Occurrences"}), 
                     React.createElement("div", {id: "myLineChartContainer"}, 
                         React.createElement("canvas", {id: "myLineChart", width: "970", height: "400"})
                     ), 
@@ -605,8 +633,7 @@ var ReportsPage = React.createClass({displayName: "ReportsPage",
             );
             reportDOM.push(
                 React.createElement("div", null, 
-                    React.createElement("h3", {id: "headingChart2"}, "Version Comparison Users Affected"), 
-                    React.createElement("hr", null), 
+                    React.createElement(Heading, {title: "Version Comparison Users Affected"}), 
                     React.createElement("div", {id: "myLineChartContainer2"}, 
                         React.createElement("canvas", {id: "myLineChart2", width: "970", height: "400"})
                     ), 
@@ -617,8 +644,7 @@ var ReportsPage = React.createClass({displayName: "ReportsPage",
             );
             reportDOM.push(
                 React.createElement("div", null, 
-                    React.createElement("h3", {id: "headingChart3"}, "Version Comparison Types of Errors"), 
-                    React.createElement("hr", null), 
+                    React.createElement(Heading, {title: "Version Comparison Types of Errors"}), 
                     React.createElement("div", {id: "myLineChartContainer3"}, 
                         React.createElement("canvas", {id: "myLineChart3", width: "970", height: "400"})
                     ), 
@@ -1322,10 +1348,12 @@ var StatusPage = React.createClass({displayName: "StatusPage",
             
         var hourlySummary = null;
         if (hourlySummaryResult && this.state.toOptions && this.state.toOptions.length > 0) {
+            
+
+            
             hourlySummary = (
                 React.createElement("div", null, 
-                    React.createElement("h3", {id: "headingHourly"}, "Hourly Summary"), 
-                    React.createElement("hr", null), 
+                    React.createElement(Heading, {title: "Hourly Summary"}), 
                     React.createElement("div", {id: "myLineChartContainer"}, 
                         React.createElement("canvas", {id: "myLineChart", width: "970", height: "400"})
                     ), 
@@ -1340,8 +1368,7 @@ var StatusPage = React.createClass({displayName: "StatusPage",
         if (errorSummaryResult) {
             errorSummary = (
                 React.createElement("div", {id: "errorSummarySection"}, 
-                    React.createElement("h3", null, "Error Summary"), 
-                    React.createElement("hr", null), 
+                    React.createElement(Heading, {title: "Error Summary"}), 
                     React.createElement("div", {id: "myPieChartContainer"}, 
                         React.createElement("canvas", {id: "myPieChart", width: "600", height: "300"})
                     ), 

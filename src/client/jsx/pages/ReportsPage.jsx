@@ -43,8 +43,7 @@ var ReportsPage = React.createClass({
         if (reportData) {
             reportDOM.push(
                 <div>
-                    <h3 id="headingChart">Version Comparison Error Occurrences</h3>
-                    <hr />
+                    <Heading title="Version Comparison Error Occurrences"/>
                     <div id="myLineChartContainer">
                         <canvas id="myLineChart" width="970" height="400"></canvas>
                     </div>
@@ -55,8 +54,7 @@ var ReportsPage = React.createClass({
             );
             reportDOM.push(
                 <div>
-                    <h3 id="headingChart2">Version Comparison Users Affected</h3>
-                    <hr />
+                    <Heading title="Version Comparison Users Affected"/>
                     <div id="myLineChartContainer2">
                         <canvas id="myLineChart2" width="970" height="400"></canvas>
                     </div>
@@ -67,8 +65,7 @@ var ReportsPage = React.createClass({
             );
             reportDOM.push(
                 <div>
-                    <h3 id="headingChart3">Version Comparison Types of Errors</h3>
-                    <hr />
+                    <Heading title="Version Comparison Types of Errors"/>
                     <div id="myLineChartContainer3">
                         <canvas id="myLineChart3" width="970" height="400"></canvas>
                     </div>

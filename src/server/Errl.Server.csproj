@@ -266,6 +266,7 @@
     <Content Include="js\app.min.js" />
     <Content Include="js\jquery.min.js" />
     <Content Include="js\libs.min.js" />
+    <Content Include="js\react-with-addons.min.js" />
     <Content Include="js\react.min.js" />
     <Content Include="js\reports.js" />
     <Content Include="Areas\HelpPage\Views\Web.config" />
