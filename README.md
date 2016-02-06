@@ -1,6 +1,7 @@
 # Errl
 
-Error Reporting Client and API
+Error Reporting Client and API.
+To err is hooman; to errl is musheen.
 
 ### Getting Started
 
